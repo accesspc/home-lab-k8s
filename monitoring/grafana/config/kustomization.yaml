@@ -1,0 +1,10 @@
+---
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    name: grafana-config
+configMapGenerator:
+  - name: grafana-config
+    namespace: monitoring
+    files:
+      - provider.yml

@@ -1,0 +1,54 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blackbox
+  namespace: monitoring
+  labels:
+    app: blackbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blackbox
+  template:
+    metadata:
+      labels:
+        app: blackbox
+    spec:
+      containers:
+        - name: blackbox
+          image: prom/blackbox-exporter
+          ports:
+            - containerPort: 9115
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 9115
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            successThreshold: 1
+            httpGet:
+              path: /
+              port: 9115
+              scheme: HTTP
+            timeoutSeconds: 2
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256M
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/blackbox_exporter
+      volumes:
+        - name: config-volume
+          configMap:
+            name: blackbox-config

@@ -1,0 +1,100 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: monitoring
+  labels:
+    app: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      initContainers:
+        - name: ipworward
+          image: busybox
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - sysctl -w net.ipv4.ip_forward=1 net.ipv6.conf.all.forwarding=1
+          resources:
+            requests:
+              cpu: 1m
+              memory: 1M
+          securityContext:
+            privileged: true
+      containers:
+        - name: prometheus
+          image: prom/prometheus
+          ports:
+            - containerPort: 9090
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /-/ready
+              port: 9090
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            successThreshold: 1
+            httpGet:
+              path: /-/healthy
+              port: 9090
+              scheme: HTTP
+            timeoutSeconds: 2
+          resources:
+            requests:
+              cpu: 500m
+              memory: 500M
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/prometheus
+            - name: data-volume
+              mountPath: /prometheus
+        - name: sidecar-tailscale
+          image: tailscale/tailscale
+          imagePullPolicy: Always
+          env:
+            - name: TS_KUBE_SECRET
+              value: tailscale-auth
+            - name: TS_USERSPACE
+              value: "false"
+            - name: TS_AUTHKEY
+              valueFrom:
+                secretKeyRef:
+                  name: tailscale-auth
+                  key: TS_AUTHKEY
+                  optional: true
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128M
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+      volumes:
+        - name: config-volume
+          configMap:
+            defaultMode: 420
+            name: prometheus-config
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: prometheus-pvc

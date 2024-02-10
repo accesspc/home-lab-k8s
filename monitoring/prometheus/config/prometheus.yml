@@ -1,0 +1,215 @@
+---
+global:
+  # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  scrape_interval: 15s
+  # Evaluate rules every 15 seconds. The default is every 1 minute.
+  evaluation_interval: 15s
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - "alertmanager.monitoring.svc:9093"
+
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped
+  # from this config.
+  - job_name: blackbox
+    metrics_path: /probe
+    params:
+      module:
+        - http_2xx
+
+    relabel_configs:
+      - source_labels:
+          - __address__
+        target_label: __param_target
+      - source_labels:
+          - __param_target
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox.monitoring.svc.cluster.local:9115
+
+    static_configs:
+      - targets:
+          - reiciunas.dev
+          - rubicbit.com
+          - scoachingtherapy.com
+
+  - job_name: kube-state-metrics
+
+    static_configs:
+      - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
+
+  - job_name: kubernetes-apiservers
+
+    kubernetes_sd_configs:
+      - role: endpoints
+
+    scheme: https
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+        action: keep
+        regex: default;kubernetes;https
+
+  - job_name: kubernetes-nodes
+    scheme: https
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+    kubernetes_sd_configs:
+      - role: node
+
+    relabel_configs:
+      - action: labelmap
+        regex: __meta_kubernetes_node_label_(.+)
+      - target_label: __address__
+        replacement: kubernetes.default.svc:443
+      - source_labels: [__meta_kubernetes_node_name]
+        regex: (.+)
+        target_label: __metrics_path__
+        replacement: /api/v1/nodes/${1}/proxy/metrics
+
+  - job_name: kubernetes-pods
+    kubernetes_sd_configs:
+      - role: pod
+
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
+      - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+        action: replace
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: $1:$2
+        target_label: __address__
+      - action: labelmap
+        regex: __meta_kubernetes_pod_label_(.+)
+      - source_labels: [__meta_kubernetes_namespace]
+        action: replace
+        target_label: kubernetes_namespace
+      - source_labels: [__meta_kubernetes_pod_name]
+        action: replace
+        target_label: kubernetes_pod_name
+
+  - job_name: kubernetes-cadvisor
+    scheme: https
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+    kubernetes_sd_configs:
+      - role: node
+
+    relabel_configs:
+      - action: labelmap
+        regex: __meta_kubernetes_node_label_(.+)
+      - target_label: __address__
+        replacement: kubernetes.default.svc:443
+      - source_labels: [__meta_kubernetes_node_name]
+        regex: (.+)
+        target_label: __metrics_path__
+        replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+
+  - job_name: kubernetes-service-endpoints
+
+    kubernetes_sd_configs:
+      - role: endpoints
+
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+      - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+        action: replace
+        target_label: __scheme__
+        regex: (https?)
+      - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
+      - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+        action: replace
+        target_label: __address__
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: $1:$2
+      - action: labelmap
+        regex: __meta_kubernetes_service_label_(.+)
+      - source_labels: [__meta_kubernetes_namespace]
+        action: replace
+        target_label: kubernetes_namespace
+      - source_labels: [__meta_kubernetes_service_name]
+        action: replace
+        target_label: kubernetes_name
+
+  - job_name: node
+
+    static_configs:
+      - targets:
+          - 100.86.208.127:9100
+        labels:
+          instance: aws-web03
+      - targets:
+          - 100.116.83.35:9100
+        labels:
+          instance: aws-vpn01
+      - targets:
+          - 100.67.155.59:9100
+        labels:
+          instance: bl1
+      - targets:
+          - 100.85.71.13:9100
+        labels:
+          instance: fh01
+      - targets:
+          - 100.90.219.99:9100
+        labels:
+          instance: fw
+      - targets:
+          - 100.92.107.61:9100
+        labels:
+          instance: store
+
+  - job_name: node-exporter
+
+    kubernetes_sd_configs:
+      - role: endpoints
+
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_endpoints_name]
+        regex: 'node-exporter'
+        action: keep
+
+# - job_name: snmp
+#   metrics_path: /snmp
+
+#   params:
+#     module:
+#       - synology
+
+#   relabel_configs:
+#     - source_labels:
+#         - __address__
+#       target_label: __param_target
+#     - source_labels:
+#         - __param_target
+#       target_label: instance
+#     - target_label: __address__
+#       replacement: snmp.monitoring.svc.cluster.local:9116
+
+#   static_configs:
+#     - targets:
+#         - 100.92.107.61
+#       labels:
+#         instance: store

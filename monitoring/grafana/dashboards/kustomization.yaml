@@ -1,0 +1,14 @@
+---
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    grafana_dashboard: "1"
+
+namespace: monitoring
+
+configMapGenerator:
+  - name: grafana-dashboard-blackbox
+    files: [blackbox.json]
+
+  - name: grafana-dashboard-overview
+    files: [overview.json]

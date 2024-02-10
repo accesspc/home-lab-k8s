@@ -1,0 +1,10 @@
+---
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    name: blackbox-config
+configMapGenerator:
+  - name: blackbox-config
+    namespace: monitoring
+    files:
+      - config.yml
