@@ -12,7 +12,7 @@ K8s SwissKnife / debug box. This command runs it in `monitoring` namespace, inte
 kubectl -n monitoring run -i --rm --tty busybox --image=busybox --restart=Never -- sh
 ```
 
-## 1. metrics-server
+## metrics-server
 
 [README.md](./metrics-server/)
 
@@ -20,7 +20,7 @@ Scalable and efficient source of container resource metrics for Kubernetes built
 
 Basically, allows you to run `kubectl top [node | pod]` and get basic CPU and RAM usage. In addition, this allows Kubernetes Dashboard to display the same information in it's web UI.
 
-## 2. kube-state-metrics
+## kube-state-metrics
 
 [README.md](./kube-state-metrics/)
 
@@ -28,7 +28,7 @@ Add-on agent to generate and expose cluster-level metrics [source](https://githu
 
 There a whole bunch of documentation about this, but in a nutshell - it exposes metrics to Prometheus.
 
-## 3. dashboard
+## dashboard
 
 [README.md](./dashboard/)
 
@@ -36,7 +36,15 @@ General-purpose web UI for Kubernetes clusters [source](https://github.com/kuber
 
 It says it all.
 
-## 4.1. kube-prometheus-stack (Helm)
+## cert-manager
+
+[README.md](./cert-manager/)
+
+Certificate manager for Kubernetes. In this case - with Let's Encrypt issuer [source](https://cert-manager.io/docs/).
+
+## Monitoring
+
+### kube-prometheus-stack (Helm)
 
 [README.md](./kube-prometheus-stack/)
 
@@ -44,7 +52,7 @@ Installs the kube-prometheus stack, a collection of Kubernetes manifests, Grafan
 
 This thing installs a bunch of stuff, but not everything works on the local Lab without adjustments, thus there is the next option.
 
-## 4.2. monitoring
+### monitoring
 
 [README.md](./monitoring/)
 
