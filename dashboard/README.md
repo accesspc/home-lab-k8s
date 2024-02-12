@@ -15,10 +15,6 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/a
 Create ServiceAccount, ClusterRoleBinding and Secret objects:
 
 ```bash
-kubectl apply -f dashboard/serviceaccount.yml
-kubectl apply -f dashboard/clusterrolebinding.yml
-kubectl apply -f dashboard/secret.yml
-# or
 kubectl apply -f dashboard/
 ```
 
