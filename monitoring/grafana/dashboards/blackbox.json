@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 9,
+  "id": 26,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -377,6 +377,7 @@
             }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -474,6 +475,7 @@
             }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -765,6 +767,7 @@
             }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -863,6 +866,7 @@
             }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -984,6 +988,6 @@
   "timezone": "",
   "title": "Blackbox",
   "uid": "QguHWQ-Vz",
-  "version": 7,
+  "version": 2,
   "weekStart": ""
 }
