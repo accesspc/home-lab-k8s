@@ -1,0 +1,19 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana.k8s.reiciunas.dev
+  namespace: monitoring
+spec:
+  dnsNames:
+    - grafana.k8s.reiciunas.dev
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  secretName: grafana.k8s.reiciunas.dev
+  subject:
+    organizations:
+      - reiciunas.dev
+  usages:
+    - client auth
+    - server auth

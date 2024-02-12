@@ -7,4 +7,5 @@ configMapGenerator:
   - name: grafana-config
     namespace: monitoring
     files:
+      - grafana.ini
       - provider.yml

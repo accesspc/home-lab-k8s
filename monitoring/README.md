@@ -64,12 +64,12 @@ All Grafana Dashboards are automatically provisioned from this repo. The whole p
 ```bash
 # ConfigMap: preview
 kubectl kustomize monitoring/grafana/config/
-kubectl kustomize monitoring/grafana/dashboards/
+kubectl kustomize monitoring/grafana/dashboards/default/
 kubectl kustomize monitoring/grafana/dashboards/kubernetes/
 
 # Apply
 kubectl apply -k monitoring/grafana/config/
-kubectl apply -k monitoring/grafana/dashboards/
+kubectl apply -k monitoring/grafana/dashboards/default/
 kubectl apply -k monitoring/grafana/dashboards/kubernetes/
 
 kubectl apply -f monitoring/grafana

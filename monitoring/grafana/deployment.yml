@@ -31,7 +31,7 @@ spec:
             httpGet:
               path: /robots.txt
               port: 3000
-              scheme: HTTP
+              scheme: HTTPS
             initialDelaySeconds: 5
             periodSeconds: 5
             successThreshold: 1
@@ -53,12 +53,17 @@ spec:
               memory: 1Gi
           volumeMounts:
             - name: config-volume
+              mountPath: /etc/grafana/grafana.ini
+              subPath: grafana.ini
+            - name: config-volume
               mountPath: /etc/grafana/provisioning/dashboards/provider.yml
               subPath: provider.yml
             - name: dashboards
               mountPath: /etc/dashboards
             - name: data-volume
               mountPath: /var/lib/grafana
+            - name: tls-crt
+              mountPath: /etc/grafana/tls
         - name: sidecar-dashboards
           image: kiwigrid/k8s-sidecar
           env:
@@ -82,3 +87,6 @@ spec:
         - name: data-volume
           persistentVolumeClaim:
             claimName: grafana-pvc
+        - name: tls-crt
+          secret:
+            secretName: grafana.k8s.reiciunas.dev
