@@ -57,6 +57,8 @@ scrape_configs:
       - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
         action: keep
         regex: default;kubernetes;https
+      - target_label: cluster
+        replacement: kubernetes
 
   - job_name: kubernetes-nodes
     scheme: https
@@ -76,6 +78,8 @@ scrape_configs:
         regex: (.+)
         target_label: __metrics_path__
         replacement: /api/v1/nodes/${1}/proxy/metrics
+      - target_label: cluster
+        replacement: kubernetes
 
   - job_name: kubernetes-pods
     kubernetes_sd_configs:
@@ -102,6 +106,8 @@ scrape_configs:
       - source_labels: [__meta_kubernetes_pod_name]
         action: replace
         target_label: kubernetes_pod_name
+      - target_label: cluster
+        replacement: kubernetes
 
   - job_name: kubernetes-cadvisor
     scheme: https
@@ -121,6 +127,8 @@ scrape_configs:
         regex: (.+)
         target_label: __metrics_path__
         replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+      - target_label: cluster
+        replacement: kubernetes
 
   - job_name: kubernetes-service-endpoints
 
@@ -152,6 +160,8 @@ scrape_configs:
       - source_labels: [__meta_kubernetes_service_name]
         action: replace
         target_label: kubernetes_name
+      - target_label: cluster
+        replacement: kubernetes
 
   - job_name: node
 
@@ -177,6 +187,21 @@ scrape_configs:
         labels:
           instance: fw
       - targets:
+          - 192.168.68.16:9100
+        labels:
+          cluster: kubernetes
+          instance: k8s-control
+      - targets:
+          - 192.168.68.17:9100
+        labels:
+          cluster: kubernetes
+          instance: k8s-worker1
+      - targets:
+          - 192.168.68.18:9100
+        labels:
+          cluster: kubernetes
+          instance: k8s-worker2
+      - targets:
           - 100.92.107.61:9100
         labels:
           instance: store
@@ -190,26 +215,5 @@ scrape_configs:
       - source_labels: [__meta_kubernetes_endpoints_name]
         regex: 'node-exporter'
         action: keep
-
-# - job_name: snmp
-#   metrics_path: /snmp
-
-#   params:
-#     module:
-#       - synology
-
-#   relabel_configs:
-#     - source_labels:
-#         - __address__
-#       target_label: __param_target
-#     - source_labels:
-#         - __param_target
-#       target_label: instance
-#     - target_label: __address__
-#       replacement: snmp.monitoring.svc.cluster.local:9116
-
-#   static_configs:
-#     - targets:
-#         - 100.92.107.61
-#       labels:
-#         instance: store
+      - target_label: cluster
+        replacement: kubernetes
