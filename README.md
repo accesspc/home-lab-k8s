@@ -4,14 +4,6 @@ A little how to what this is and what it's used for. The whole point for this K8
 
 With all that in mind, here are the steps and services that are deployed, and the prefered order of things.
 
-## 0. Debug / BusyBox
-
-K8s SwissKnife / debug box. This command runs it in `monitoring` namespace, interactive shell and deletes itself after exit to leave it all clean.
-
-```bash
-kubectl -n monitoring run -i --rm --tty busybox --image=busybox --restart=Never -- sh
-```
-
 ## metrics-server
 
 [README.md](./metrics-server/)
@@ -65,3 +57,42 @@ At the moment it contains:
 * Prometheus exporters:
   * Blackbox - for HTTP, TCP, etc.
   * SNMP - for SNMP walks
+
+## Tools
+
+### Debug / BusyBox
+
+K8s SwissKnife / debug box. This command runs it in `monitoring` namespace, interactive shell and deletes itself after exit to leave it all clean.
+
+```bash
+kubectl -n monitoring run -i --rm --tty busybox --image=busybox --restart=Never -- sh
+```
+
+### K9s - Kubernetes CLI
+
+[Official documentation](https://k9scli.io/)
+
+Quick install:
+
+```bash
+brew install derailed/k9s/k9s
+```
+
+### Krr
+
+[Official documentation](https://github.com/robusta-dev/krr)
+
+Prometheus-based Kubernetes Resource Recommendations
+
+Quick install:
+
+```bash
+brew tap robusta-dev/homebrew-krr
+brew install krr
+```
+
+Run:
+
+```bash
+krr simple -p https://prometheus.k8s.reiciunas.dev:30090
+```
