@@ -47,7 +47,9 @@ kubectl apply -k monitoring/prometheus/config
 kubectl apply -f monitoring/prometheus
 ```
 
-* Prometheus: http://<NODE_IP>:30090/
+* Prometheus:
+  * https://<NODE_IP>:30090/
+  * https://prometheus.k8s.reiciunas.dev:30030 (your FQDN defined in certificate.yml)
 
 ## Grafana
 
@@ -75,4 +77,6 @@ kubectl apply -k monitoring/grafana/dashboards/kubernetes/
 kubectl apply -f monitoring/grafana
 ```
 
-* Grafana: http://<NODE_IP>:30030/
+* Grafana:
+  * https://<NODE_IP>:30030/
+  * https://grafana.k8s.reiciunas.dev:30030 (your FQDN defined in certificate.yml)
