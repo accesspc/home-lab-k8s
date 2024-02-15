@@ -34,6 +34,14 @@ spec:
       containers:
         - name: prometheus
           image: prom/prometheus
+          command:
+            - /bin/prometheus
+          args:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--storage.tsdb.path=/prometheus"
+            - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+            - "--web.console.templates=/usr/share/prometheus/consoles"
+            - "--web.config.file=/etc/prometheus/web_config.yml"
           ports:
             - containerPort: 9090
           readinessProbe:
@@ -41,7 +49,7 @@ spec:
             httpGet:
               path: /-/ready
               port: 9090
-              scheme: HTTP
+              scheme: HTTPS
             initialDelaySeconds: 5
             periodSeconds: 5
             successThreshold: 1
@@ -54,7 +62,7 @@ spec:
             httpGet:
               path: /-/healthy
               port: 9090
-              scheme: HTTP
+              scheme: HTTPS
             timeoutSeconds: 2
           resources:
             requests:
@@ -65,9 +73,15 @@ spec:
               memory: 1Gi
           volumeMounts:
             - name: config-volume
-              mountPath: /etc/prometheus
+              mountPath: /etc/prometheus/prometheus.yml
+              subPath: prometheus.yml
+            - name: config-volume
+              mountPath: /etc/prometheus/web_config.yml
+              subPath: web_config.yml
             - name: data-volume
               mountPath: /prometheus
+            - name: tls-crt
+              mountPath: /etc/prometheus/tls
         - name: sidecar-tailscale
           image: tailscale/tailscale
           imagePullPolicy: Always
@@ -98,3 +112,6 @@ spec:
         - name: data-volume
           persistentVolumeClaim:
             claimName: prometheus-pvc
+        - name: tls-crt
+          secret:
+            secretName: prometheus.k8s.reiciunas.dev
