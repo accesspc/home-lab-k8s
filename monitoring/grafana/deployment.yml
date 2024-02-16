@@ -46,11 +46,10 @@ spec:
             timeoutSeconds: 2
           resources:
             requests:
-              cpu: 250m
-              memory: 750Mi
+              cpu: 20m
+              memory: 100Mi
             limits:
-              cpu: 1000m
-              memory: 1Gi
+              memory: 100Mi
           volumeMounts:
             - name: config-volume
               mountPath: /etc/grafana/grafana.ini
@@ -72,9 +71,11 @@ spec:
             - name: FOLDER
               value: /etc/dashboards
           resources:
+            requests:
+              cpu: 10m
+              memory: 100Mi
             limits:
-              cpu: 100m
-              memory: 128M
+              memory: 100Mi
           volumeMounts:
             - name: dashboards
               mountPath: /etc/dashboards

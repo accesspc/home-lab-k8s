@@ -42,9 +42,11 @@ spec:
               scheme: HTTP
             timeoutSeconds: 2
           resources:
+            requests:
+              cpu: 10m
+              memory: 100Mi
             limits:
-              cpu: 500m
-              memory: 256M
+              memory: 100Mi
           volumeMounts:
             - name: config-volume
               mountPath: /etc/blackbox_exporter

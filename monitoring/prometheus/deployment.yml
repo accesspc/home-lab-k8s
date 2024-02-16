@@ -27,8 +27,8 @@ spec:
             - sysctl -w net.ipv4.ip_forward=1 net.ipv6.conf.all.forwarding=1
           resources:
             requests:
-              cpu: 1m
-              memory: 1M
+              cpu: 10m
+              memory: 10Mi
           securityContext:
             privileged: true
       containers:
@@ -66,11 +66,10 @@ spec:
             timeoutSeconds: 2
           resources:
             requests:
-              cpu: 500m
-              memory: 500M
+              cpu: 35m
+              memory: 500Mi
             limits:
-              cpu: 1000m
-              memory: 1Gi
+              memory: 500Mi
           volumeMounts:
             - name: config-volume
               mountPath: /etc/prometheus/prometheus.yml
@@ -97,9 +96,11 @@ spec:
                   key: TS_AUTHKEY
                   optional: true
           resources:
+            requests:
+              cpu: 10m
+              memory: 100Mi
             limits:
-              cpu: 500m
-              memory: 128M
+              memory: 100Mi
           securityContext:
             capabilities:
               add:
