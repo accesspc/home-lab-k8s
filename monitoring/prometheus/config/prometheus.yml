@@ -16,6 +16,14 @@ alerting:
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped
   # from this config.
+  - job_name: apache
+
+    static_configs:
+      - targets:
+          - 100.86.208.127:9117
+        labels:
+          instance: aws-web03
+
   - job_name: blackbox
     metrics_path: /probe
     params:
