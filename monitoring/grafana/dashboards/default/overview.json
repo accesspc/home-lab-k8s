@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 27,
+  "id": 15,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -239,7 +239,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "b78264a6-8468-4e5f-a542-b97c55935a87"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -325,7 +325,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "b78264a6-8468-4e5f-a542-b97c55935a87"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "avg(node_hwmon_temp_celsius{instance=~\"$instance\"} > 0) by (instance, sensor, chip)",
@@ -337,7 +337,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "b78264a6-8468-4e5f-a542-b97c55935a87"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "smartmon_temperature_celsius_value{instance=~\"$instance\"}",
@@ -440,7 +440,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "b78264a6-8468-4e5f-a542-b97c55935a87"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "node_load1{instance=~\"$instance\"}",
@@ -452,7 +452,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "b78264a6-8468-4e5f-a542-b97c55935a87"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "node_load5{instance=~\"$instance\"}",
@@ -465,7 +465,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "b78264a6-8468-4e5f-a542-b97c55935a87"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "node_load15{instance=~\"$instance\"}",
@@ -939,7 +939,7 @@
         "current": {
           "selected": false,
           "text": "prometheus",
-          "value": "b78264a6-8468-4e5f-a542-b97c55935a87"
+          "value": "fb0aaca5-a2b6-493c-99ee-b26eb5b4273a"
         },
         "hide": 0,
         "includeAll": false,
@@ -993,6 +993,6 @@
   "timezone": "",
   "title": "Overview",
   "uid": "S6RwTkYVk",
-  "version": 7,
+  "version": 2,
   "weekStart": ""
 }
