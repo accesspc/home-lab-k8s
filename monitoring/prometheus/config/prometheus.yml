@@ -183,7 +183,7 @@ scrape_configs:
         labels:
           instance: aws-vpn01
       - targets:
-          - 100.67.155.59:9100
+          - 192.168.68.2:9100
         labels:
           instance: bl1
       - targets:
@@ -191,9 +191,9 @@ scrape_configs:
         labels:
           instance: fh01
       - targets:
-          - 100.90.219.99:9100
+          - 192.168.68.11:9100
         labels:
-          instance: fw
+          instance: fw01
       - targets:
           - 192.168.68.16:9100
         labels:
@@ -210,7 +210,7 @@ scrape_configs:
           cluster: kubernetes
           instance: k8s-worker2
       - targets:
-          - 100.92.107.61:9100
+          - 192.168.68.3:9100
         labels:
           instance: store
 
@@ -225,6 +225,30 @@ scrape_configs:
         action: keep
       - target_label: cluster
         replacement: kubernetes
+
+  - job_name: postfix
+
+    static_configs:
+      - targets:
+          - 192.168.68.2:9154
+        labels:
+          instance: bl1
+
+  - job_name: process
+
+    static_configs:
+      - targets:
+          - 100.86.208.127:9256
+        labels:
+          instance: aws-web03
+      - targets:
+          - 100.116.83.35:9256
+        labels:
+          instance: aws-vpn01
+      - targets:
+          - 192.168.68.2:9256
+        labels:
+          instance: bl1
 
   - job_name: prometheus
 

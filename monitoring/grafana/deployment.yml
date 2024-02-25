@@ -47,9 +47,9 @@ spec:
           resources:
             requests:
               cpu: 20m
-              memory: 105Mi
+              memory: 110Mi
             limits:
-              memory: 105Mi
+              memory: 110Mi
           volumeMounts:
             - name: config-volume
               mountPath: /etc/grafana/grafana.ini
