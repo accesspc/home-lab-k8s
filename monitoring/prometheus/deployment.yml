@@ -67,9 +67,9 @@ spec:
           resources:
             requests:
               cpu: 37m
-              memory: 485Mi
+              memory: 768Mi
             limits:
-              memory: 485Mi
+              memory: 768Mi
           volumeMounts:
             - name: config-volume
               mountPath: /etc/prometheus/prometheus.yml
