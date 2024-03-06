@@ -20,9 +20,9 @@ scrape_configs:
 
     static_configs:
       - targets:
-          - 100.86.208.127:9117
+          - 10.16.4.252:9117
         labels:
-          instance: aws-web03
+          instance: aws-web01
 
   - job_name: blackbox
     metrics_path: /probe
@@ -171,19 +171,27 @@ scrape_configs:
       - target_label: cluster
         replacement: kubernetes
 
+  - job_name: mysqld
+
+    static_configs:
+      - targets:
+          - 10.16.0.198:9104
+        labels:
+          instance: aws-mysql01
+
   - job_name: node
 
     static_configs:
       - targets:
-          - 10.16.0.24:9100
+          - 10.16.0.198:9100
         labels:
           instance: aws-mysql01
       - targets:
-          - 10.16.4.94:9100
+          - 10.16.4.213:9100
         labels:
           instance: aws-vpn01
       - targets:
-          - 10.16.4.229:9100
+          - 10.16.4.252:9100
         labels:
           instance: aws-web01
       - targets:
