@@ -16,5 +16,8 @@ configMapGenerator:
   - name: grafana-dashboard-overview
     files: [overview.json]
 
+  - name: grafana-dashboard-mysqld
+    files: [mysqld.json]
+
   - name: grafana-dashboard-prometheus
     files: [prometheus.json]
