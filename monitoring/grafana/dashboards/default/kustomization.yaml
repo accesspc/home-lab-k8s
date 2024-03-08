@@ -7,9 +7,6 @@ generatorOptions:
 namespace: monitoring
 
 configMapGenerator:
-  - name: grafana-dashboard-apache
-    files: [apache.json]
-
   - name: grafana-dashboard-blackbox
     files: [blackbox.json]
 
