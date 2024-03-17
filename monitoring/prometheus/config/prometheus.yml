@@ -179,7 +179,7 @@ scrape_configs:
         labels:
           instance: aws-mysql01
       - targets:
-          - 10.16.4.227:9100
+          - 10.16.4.195:9100
         labels:
           instance: aws-vpn01
       - targets:
