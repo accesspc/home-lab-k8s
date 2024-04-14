@@ -167,7 +167,7 @@ scrape_configs:
 
     static_configs:
       - targets:
-          - 10.16.0.188:9104
+          - 10.16.0.207:9104
         labels:
           instance: aws-mysql01
 
@@ -175,15 +175,15 @@ scrape_configs:
 
     static_configs:
       - targets:
-          - 10.16.0.188:9100
+          - 10.16.0.207:9100
         labels:
           instance: aws-mysql01
       - targets:
-          - 10.16.4.195:9100
+          - 10.16.4.69:9100
         labels:
           instance: aws-vpn01
       - targets:
-          - 10.16.4.38:9100
+          - 10.16.4.209:9100
         labels:
           instance: aws-web01
       - targets:
