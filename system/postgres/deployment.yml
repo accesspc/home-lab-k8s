@@ -29,7 +29,7 @@ spec:
                   key: POSTGRES_PASSWORD
           envFrom:
             - configMapRef:
-                name: postgres-config
+                name: postgres-env-config
           ports:
             - containerPort: 5432
           livenessProbe:
