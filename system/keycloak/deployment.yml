@@ -38,13 +38,13 @@ spec:
             - name: KC_METRICS_ENABLED
               value: "true"
             - name: KC_HOSTNAME_ADMIN_URL
-              value: "https://keycloak.k8s.reiciunas.dev:30443/auth/"
+              value: "https://keycloak.k8s.reiciunas.dev:30443/"
             - name: KC_HOSTNAME_URL
-              value: "https://keycloak.k8s.reiciunas.dev:30443/auth/"
+              value: "https://keycloak.k8s.reiciunas.dev:30443/"
             - name: KC_HTTP_ENABLED
               value: "true"
             - name: KC_HTTP_RELATIVE_PATH
-              value: /auth
+              value: /
             - name: KC_HTTPS_CERTIFICATE_FILE
               value: $${kc.home.dir}/conf/tls/tls.crt
             - name: KC_HTTPS_CERTIFICATE_KEY_FILE
@@ -70,7 +70,7 @@ spec:
           readinessProbe:
             failureThreshold: 3
             httpGet:
-              path: /auth
+              path: /realms/master
               port: 8080
               scheme: HTTP
             periodSeconds: 10
