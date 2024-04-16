@@ -1,0 +1,62 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: system
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak:24.0.2
+          args: ["start-dev"]
+          env:
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-secret
+                  key: KEYCLOAK_ADMIN_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: keycloak-env-config
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: https
+              containerPort: 8443
+          readinessProbe:
+            httpGet:
+              path: /realms/master
+              port: 8080
+          # resources:
+          #   requests:
+          #     cpu: 100m
+          #     memory: 100Mi
+          #   limits:
+          #     memory: 100Mi
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/keycloak/conf/keycloak.conf
+              subPath: keycloak.conf
+            - name: tls-crt
+              mountPath: /opt/keycloak/conf/tls
+      serviceAccount: keycloak
+      volumes:
+        - name: config-volume
+          configMap:
+            name: keycloak-config
+        - name: tls-crt
+          secret:
+            secretName: keycloak.k8s.reiciunas.dev

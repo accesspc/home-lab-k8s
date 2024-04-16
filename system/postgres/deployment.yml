@@ -57,6 +57,8 @@ spec:
           volumeMounts:
             - name: data-volume
               mountPath: /var/lib/postgresql/data
+            - name: init-db
+              mountPath: /docker-entrypoint-initdb.d
       securityContext:
         fsGroup: 26
       serviceAccount: postgres
@@ -64,3 +66,7 @@ spec:
         - name: data-volume
           persistentVolumeClaim:
             claimName: postgres-pvc
+        - name: init-db
+          configMap:
+            name: postgres-db-config
+            defaultMode: 0555
