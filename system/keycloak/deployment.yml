@@ -21,25 +21,61 @@ spec:
       containers:
         - name: keycloak
           image: quay.io/keycloak/keycloak:24.0.2
-          args: ["start-dev"]
+          args: ["start", "--cache-stack=kubernetes"]
           env:
+            - name: KC_DB
+              value: "postgres"
+            - name: KC_DB_PASSWORD
+              value: "keycloak"
+            - name: KC_DB_USERNAME
+              value: "keycloak"
+            - name: KC_DB_URL_DATABASE
+              value: keycloak
+            - name: KC_DB_URL_HOST
+              value: postgres
+            - name: KC_HEALTH_ENABLED
+              value: "true"
+            - name: KC_METRICS_ENABLED
+              value: "true"
+            - name: KC_HOSTNAME_ADMIN_URL
+              value: "https://keycloak.k8s.reiciunas.dev:30443/auth/"
+            - name: KC_HOSTNAME_URL
+              value: "https://keycloak.k8s.reiciunas.dev:30443/auth/"
+            - name: KC_HTTP_ENABLED
+              value: "true"
+            - name: KC_HTTP_RELATIVE_PATH
+              value: /auth
+            - name: KC_HTTPS_CERTIFICATE_FILE
+              value: $${kc.home.dir}/conf/tls/tls.crt
+            - name: KC_HTTPS_CERTIFICATE_KEY_FILE
+              value: $${kc.home.dir}/conf/tls/tls.key
+            - name: KEYCLOAK_ADMIN
+              value: admin
             - name: KEYCLOAK_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: keycloak-secret
                   key: KEYCLOAK_ADMIN_PASSWORD
-          envFrom:
-            - configMapRef:
-                name: keycloak-env-config
+            - name: jgroups.dns.query
+              value: keycloak
+            - name: PROXY_ADDRESS_FORWARDING
+              value: "true"
           ports:
+            - name: jgroups
+              containerPort: 7600
             - name: http
               containerPort: 8080
             - name: https
               containerPort: 8443
           readinessProbe:
+            failureThreshold: 3
             httpGet:
-              path: /realms/master
+              path: /auth
               port: 8080
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
           # resources:
           #   requests:
           #     cpu: 100m
@@ -47,16 +83,10 @@ spec:
           #   limits:
           #     memory: 100Mi
           volumeMounts:
-            - name: config-volume
-              mountPath: /opt/keycloak/conf/keycloak.conf
-              subPath: keycloak.conf
             - name: tls-crt
               mountPath: /opt/keycloak/conf/tls
       serviceAccount: keycloak
       volumes:
-        - name: config-volume
-          configMap:
-            name: keycloak-config
         - name: tls-crt
           secret:
             secretName: keycloak.k8s.reiciunas.dev
