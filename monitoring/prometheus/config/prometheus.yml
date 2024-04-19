@@ -202,17 +202,17 @@ scrape_configs:
           - 192.168.68.16:9100
         labels:
           cluster: kubernetes
-          instance: k8s-control
+          instance: k8s0
       - targets:
           - 192.168.68.17:9100
         labels:
           cluster: kubernetes
-          instance: k8s-worker1
+          instance: k81
       - targets:
           - 192.168.68.18:9100
         labels:
           cluster: kubernetes
-          instance: k8s-worker2
+          instance: k82
       - targets:
           - 192.168.68.3:9100
         labels:
