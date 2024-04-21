@@ -35,19 +35,17 @@ spec:
           livenessProbe:
             exec:
               command: ["pg_isready", "-U", "postgres"]
-            failureThreshold: 3
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            successThreshold: 1
-            timeoutSeconds: 5
+            periodSeconds: 15
           readinessProbe:
             exec:
               command: ["pg_isready", "-U", "postgres"]
-            failureThreshold: 3
-            initialDelaySeconds: 5
+            periodSeconds: 15
+          startupProbe:
+            failureThreshold: 10
+            exec:
+              command: ["pg_isready", "-U", "postgres"]
+            initialDelaySeconds: 10
             periodSeconds: 5
-            successThreshold: 1
-            timeoutSeconds: 5
           # resources:
           #   requests:
           #     cpu: 37m
