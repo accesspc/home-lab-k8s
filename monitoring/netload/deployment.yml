@@ -1,0 +1,34 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netload
+  namespace: monitoring
+  labels:
+    app: netload
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: netload
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: netload
+    spec:
+      containers:
+        - name: netload
+          image: curlimages/curl
+          command:
+            - /bin/sh
+          args:
+            - -c
+            - "while true ; do curl -o /dev/null https://fh01.reiciunas.dev/speed.test.16M.dat ; sleep 15 ; done"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              memory: 100Mi
