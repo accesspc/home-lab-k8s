@@ -4,33 +4,40 @@ A little how to what this is and what it's used for. The whole point for this K8
 
 With all that in mind, here are the steps and services that are deployed, and the prefered order of things.
 
-## metrics-server
+## Defaults
 
-[README.md](./metrics-server/)
+Can be all installed by running a script:
+```bash
+./defaults/defaults.sh
+```
+
+### metrics-server
+
+[README.md](./defaults/metrics-server/)
 
 Scalable and efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines [source](https://github.com/kubernetes-sigs/metrics-server).
 
 Basically, allows you to run `kubectl top [node | pod]` and get basic CPU and RAM usage. In addition, this allows Kubernetes Dashboard to display the same information in it's web UI.
 
-## kube-state-metrics
+### kube-state-metrics
 
-[README.md](./kube-state-metrics/)
+[README.md](./defaults/kube-state-metrics/)
 
 Add-on agent to generate and expose cluster-level metrics [source](https://github.com/kubernetes/kube-state-metrics).
 
 There a whole bunch of documentation about this, but in a nutshell - it exposes metrics to Prometheus.
 
-## dashboard
+### dashboard
 
-[README.md](./dashboard/)
+[README.md](./defaults/dashboard/)
 
 General-purpose web UI for Kubernetes clusters [source](https://github.com/kubernetes/dashboard).
 
 It says it all.
 
-## cert-manager
+### cert-manager
 
-[README.md](./cert-manager/)
+[README.md](./defaults/cert-manager/)
 
 Certificate manager for Kubernetes. In this case - with Let's Encrypt issuer [source](https://cert-manager.io/docs/).
 
