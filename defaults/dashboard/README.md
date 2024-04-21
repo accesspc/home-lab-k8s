@@ -21,7 +21,7 @@ kubectl apply -f dashboard/
 Retrieve the Secret token for amdin-user in kubernetes-dashboard namespace
 
 ```bash
-kubectl -n kubernetes-dashboard get secret admin-user -o jsonpath={".data.token"} | base64 -d ; echo
+echo $(kubectl -n kubernetes-dashboard get secret admin-user -o jsonpath={".data.token"} | base64 -d)
 ```
 
 ## Proxy
