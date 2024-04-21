@@ -3,7 +3,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: keycloak.k8s.reiciunas.dev
-  namespace: system
+  # namespace: system
 spec:
   dnsNames:
     - keycloak.k8s.reiciunas.dev

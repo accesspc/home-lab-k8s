@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: postgres-db-config
-  namespace: system
+  # namespace: system
   labels:
     app: postgres
 data:
@@ -21,7 +21,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: postgres-env-config
-  namespace: system
+  # namespace: system
   labels:
     app: postgres
 data:
