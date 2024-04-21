@@ -17,11 +17,6 @@ kubectl apply -f monitoring/namespace.yml
 ## Blackbox
 
 ```bash
-# ConfigMap: preview
-kubectl kustomize monitoring/blackbox/config/
-
-# Apply
-kubectl apply -k monitoring/blackbox/config/
 kubectl apply -f monitoring/blackbox/
 ```
 
@@ -39,11 +34,6 @@ kubectl apply -f monitoring/snmp/
 1. Put the base64 encoded key in `secret.yml` under `.data.TS_AUTHKEY`
 
 ```bash
-# ConfigMap: preview
-kubectl kustomize monitoring/prometheus/config
-
-# Apply
-kubectl apply -k monitoring/prometheus/config
 kubectl apply -f monitoring/prometheus
 ```
 
