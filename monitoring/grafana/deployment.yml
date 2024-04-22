@@ -24,6 +24,9 @@ spec:
         - name: grafana
           image: grafana/grafana:latest
           imagePullPolicy: IfNotPresent
+          env:
+            - name: GF_PATHS_CONFIG
+              value: /etc/grafana/custom.ini
           ports:
             - containerPort: 3000
           livenessProbe:
@@ -54,15 +57,16 @@ spec:
               memory: 110Mi
           volumeMounts:
             - name: config-volume
-              mountPath: /etc/grafana/grafana.ini
-              subPath: grafana.ini
+              mountPath: /etc/grafana/custom.ini
+              subPath: custom.ini
+            - name: config-volume
+              mountPath: /etc/grafana/provisioning/datasources/prometheus.yml
+              subPath: prometheus.yml
             - name: config-volume
               mountPath: /etc/grafana/provisioning/dashboards/provider.yml
               subPath: provider.yml
             - name: dashboards
               mountPath: /etc/dashboards
-            - name: data-volume
-              mountPath: /var/lib/grafana
             - name: tls-crt
               mountPath: /etc/grafana/tls
         - name: sidecar-dashboards
@@ -87,9 +91,6 @@ spec:
             name: grafana-config
         - name: dashboards
           emptyDir: {}
-        - name: data-volume
-          persistentVolumeClaim:
-            claimName: grafana-pvc
         - name: tls-crt
           secret:
             secretName: grafana.k8s.reiciunas.dev

@@ -7,7 +7,7 @@ metadata:
   labels:
     app: grafana
 data:
-  grafana.ini: |-
+  custom.ini: |
     # Grafana custom configuration
     # Defaults: https://github.com/grafana/grafana/tree/main/conf
 
@@ -22,6 +22,13 @@ data:
     cert_file = /etc/grafana/tls/tls.crt
     cert_key = /etc/grafana/tls/tls.key
 
+    [database]
+    type = postgres
+    host = postgres.system.svc.cluster.local
+    name = grafana
+    user = grafana
+    password = grafana
+
     [smtp]
     enabled = true
     host = 192.168.68.2:25
@@ -34,7 +41,7 @@ data:
     name = KeyCloak SSO
     allow_sign_up = true
     client_id = grafana
-    client_secret = KyfzRRd1kKz7Itk6TJePCp4Bb2LEdHra
+    client_secret = XUhuqhXzO1cksOOgTdH23k7DXj4OqPrJ
     scopes = openid email profile offline_access roles
     email_attribute_path = email
     login_attribute_path = username
@@ -43,7 +50,8 @@ data:
     token_url = https://keycloak.k8s.reiciunas.dev:30443/realms/reiciunas/protocol/openid-connect/token
     api_url = https://keycloak.k8s.reiciunas.dev:30443/realms/reiciunas/protocol/openid-connect/userinfo
     role_attribute_path = contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'
-  provider.yml: |-
+
+  provider.yml: |
     ---
     apiVersion: 1
 
@@ -57,3 +65,12 @@ data:
         options:
           path: /etc/dashboards
           foldersFromFilesStructure: true
+
+  prometheus.yml: |
+    ---
+    apiVersion: 1
+    datasources:
+      - name: prometheus
+        type: prometheus
+        orgId: 1
+        url: https://prometheus.k8s.reiciunas.dev:30090
