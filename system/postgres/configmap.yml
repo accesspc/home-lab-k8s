@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: postgres-db-config
-  # namespace: system
+  namespace: system
   labels:
     app: postgres
 data:
@@ -11,6 +11,10 @@ data:
     CREATE USER gitlab WITH SUPERUSER PASSWORD 'gitlab';
     CREATE DATABASE gitlab;
     GRANT ALL PRIVILEGES ON DATABASE gitlab TO gitlab;
+  00-grafana.sql: |-
+    CREATE USER grafana WITH SUPERUSER PASSWORD 'grafana';
+    CREATE DATABASE grafana;
+    GRANT ALL PRIVILEGES ON DATABASE grafana TO grafana;
   00-keycloak.sql: |-
     CREATE USER keycloak WITH SUPERUSER PASSWORD 'keycloak';
     CREATE DATABASE keycloak;
@@ -21,7 +25,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: postgres-env-config
-  # namespace: system
+  namespace: system
   labels:
     app: postgres
 data:
