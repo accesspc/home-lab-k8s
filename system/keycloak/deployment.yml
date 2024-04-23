@@ -87,12 +87,12 @@ spec:
               scheme: HTTP
             initialDelaySeconds: 10
             periodSeconds: 5
-          # resources:
-          #   requests:
-          #     cpu: 100m
-          #     memory: 100Mi
-          #   limits:
-          #     memory: 100Mi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 500Mi
+            limits:
+              memory: 600Mi
           volumeMounts:
             - name: tls-crt
               mountPath: /opt/keycloak/conf/tls
