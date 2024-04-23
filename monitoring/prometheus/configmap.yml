@@ -196,18 +196,18 @@ data:
               - 10.16.4.241:9100
             labels:
               instance: aws-web01
-          - targets:
-              - 192.168.68.2:9100
-            labels:
-              instance: bl1
+          # - targets:
+          #     - 192.168.68.2:9100
+          #   labels:
+          #     instance: bl1
           - targets:
               - 100.85.71.13:9100
             labels:
               instance: fh01
-          - targets:
-              - 192.168.68.11:9100
-            labels:
-              instance: fw01
+          # - targets:
+          #     - 192.168.68.11:9100
+          #   labels:
+          #     instance: fw01
           - targets:
               - 192.168.68.32:9100
             labels:
@@ -217,12 +217,12 @@ data:
               - 192.168.68.33:9100
             labels:
               cluster: kubernetes
-              instance: k81
+              instance: k8s1
           - targets:
               - 192.168.68.34:9100
             labels:
               cluster: kubernetes
-              instance: k82
+              instance: k8s2
           - targets:
               - 192.168.68.3:9100
             labels:
