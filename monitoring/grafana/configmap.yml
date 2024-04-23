@@ -36,21 +36,43 @@ data:
     from_address = grafana@reiciunas.dev
     from_name = Grafana
 
+    [log]
+    ; level = info
+
     [auth.generic_oauth]
     enabled = true
     name = KeyCloak SSO
     allow_sign_up = true
+    ; auto_login = false
     client_id = grafana
-    client_secret = admsYcOJqITybDYAWOJAHp1g91uaP9mp
+    client_secret = 3guA0gMzKk7IxSiMfQrAG6j37Zyp41bF
     scopes = openid email profile offline_access roles
+    ; empty_scopes = false
+    ; email_attribute_name = email:primary
     email_attribute_path = email
     login_attribute_path = username
     name_attribute_path = full_name
+    ; id_token_attribute_name =
     auth_url = https://keycloak.k8s.reiciunas.dev:30443/realms/reiciunas/protocol/openid-connect/auth
     token_url = https://keycloak.k8s.reiciunas.dev:30443/realms/reiciunas/protocol/openid-connect/token
     api_url = https://keycloak.k8s.reiciunas.dev:30443/realms/reiciunas/protocol/openid-connect/userinfo
-    role_attribute_path = contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'
+    ; signout_redirect_url =
+    ; teams_url =
+    ; allowed_domains =
+    ; team_ids =
+    ; allowed_organizations =
+    role_attribute_path = contains(resource_access.grafana.roles[*], 'grafanaadmin') && 'GrafanaAdmin' || contains(resource_access.grafana.roles[*], 'admin') && 'Admin' || contains(resource_access.grafana.roles[*], 'editor') && 'Editor' || 'Viewer'
+    ; groups_attribute_path =
+    ; team_ids_attribute_path =
     tls_skip_verify_insecure = true
+    ; tls_client_cert =
+    ; tls_client_key =
+    ; tls_client_ca =
+    ; use_pkce = true
+    ; auth_style =
+    allow_assign_grafana_admin = true
+
+    use_refresh_token = true
 
   provider.yml: |
     ---
