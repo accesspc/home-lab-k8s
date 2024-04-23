@@ -41,7 +41,7 @@ data:
     name = KeyCloak SSO
     allow_sign_up = true
     client_id = grafana
-    client_secret = XUhuqhXzO1cksOOgTdH23k7DXj4OqPrJ
+    client_secret = admsYcOJqITybDYAWOJAHp1g91uaP9mp
     scopes = openid email profile offline_access roles
     email_attribute_path = email
     login_attribute_path = username
@@ -50,6 +50,7 @@ data:
     token_url = https://keycloak.k8s.reiciunas.dev:30443/realms/reiciunas/protocol/openid-connect/token
     api_url = https://keycloak.k8s.reiciunas.dev:30443/realms/reiciunas/protocol/openid-connect/userinfo
     role_attribute_path = contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'
+    tls_skip_verify_insecure = true
 
   provider.yml: |
     ---
@@ -60,7 +61,7 @@ data:
         orgId: 1
         type: file
         disableDeletion: false
-        updateIntervalSeconds: 10
+        updateIntervalSeconds: 30
         allowUiUpdates: true
         options:
           path: /etc/dashboards
@@ -73,4 +74,5 @@ data:
       - name: prometheus
         type: prometheus
         orgId: 1
+        updateIntervalSeconds: 30
         url: https://prometheus.k8s.reiciunas.dev:30090
