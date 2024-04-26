@@ -98,3 +98,5 @@ data:
         orgId: 1
         updateIntervalSeconds: 30
         url: https://prometheus.k8s.reiciunas.dev:30090
+        jsonData:
+          tlsSkipVerify: true
