@@ -10,4 +10,4 @@ roleRef:
   name: tailscale
 subjects:
   - kind: ServiceAccount
-    name: default
+    name: prometheus

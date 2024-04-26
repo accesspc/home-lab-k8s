@@ -10,4 +10,4 @@ roleRef:
   name: grafana
 subjects:
   - kind: ServiceAccount
-    name: default
+    name: grafana

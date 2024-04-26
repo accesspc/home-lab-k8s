@@ -55,6 +55,7 @@ spec:
       hostIPC: true
       hostNetwork: true
       hostPID: true
+      serviceAccount: node-exporter
       tolerations:
         # these tolerations are to have the daemonset runnable on control plane nodes
         # remove them if your control plane nodes should not run pods

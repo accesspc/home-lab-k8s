@@ -50,6 +50,7 @@ spec:
           volumeMounts:
             - name: config-volume
               mountPath: /etc/blackbox_exporter
+      serviceAccount: blackbox
       volumes:
         - name: config-volume
           configMap:

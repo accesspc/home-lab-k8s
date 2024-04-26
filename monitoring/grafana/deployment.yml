@@ -85,6 +85,7 @@ spec:
           volumeMounts:
             - name: dashboards
               mountPath: /etc/dashboards
+      serviceAccount: grafana
       volumes:
         - name: config-volume
           configMap:
