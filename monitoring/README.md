@@ -26,6 +26,12 @@ kubectl apply -f monitoring/blackbox/
 kubectl apply -f monitoring/snmp/
 ```
 
+## Node Exporter
+
+```bash
+kubectl apply -f monitoring/node_exporter/
+```
+
 ## Prometheus
 
 1. Obtains Tailscale auth key from [tailscale admin](https://login.tailscale.com/admin/settings/keys) website
