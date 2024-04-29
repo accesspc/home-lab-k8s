@@ -14,7 +14,7 @@ helm repo update
 Install with CRDs for easier management and updates:
 
 ```bash
-helm install \
+helm upgrade --install \
   cert-manager jetstack/cert-manager \
   --namespace cert-manager \
   --create-namespace \
