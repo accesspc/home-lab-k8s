@@ -177,7 +177,7 @@ data:
 
         static_configs:
           - targets:
-              - 10.16.0.216:9104
+              - 10.16.0.172:9104
             labels:
               instance: aws-mysql01
 
@@ -185,15 +185,15 @@ data:
 
         static_configs:
           - targets:
-              - 10.16.0.216:9100
+              - 10.16.0.172:9100
             labels:
               instance: aws-mysql01
           - targets:
-              - 10.16.4.157:9100
+              - 10.16.4.38:9100
             labels:
               instance: aws-vpn01
           - targets:
-              - 10.16.4.241:9100
+              - 10.16.4.114:9100
             labels:
               instance: aws-web01
           # - targets:
