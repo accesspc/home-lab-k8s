@@ -9,10 +9,11 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-account-key
     server: https://acme-v02.api.letsencrypt.org/directory
+    # server: https://acme-staging-v02.api.letsencrypt.org/directory
     solvers:
       - selector:
           dnsZones:
-            - ROUTE53_HOSTED_ZONE_NAME
+            - HOSTED_ZONE_NAME
         dns01:
           route53:
             accessKeyIDSecretRef:
