@@ -9,7 +9,7 @@ spec:
     - from:
         - namespaceSelector:
             matchLabels:
-              app: monitoring
+              ns: monitoring
           podSelector:
             matchLabels:
               app: prometheus
