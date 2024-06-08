@@ -1,0 +1,16 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-prometheus
+  namespace: monitoring
+spec:
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 9090
+  podSelector:
+    matchLabels:
+      app: prometheus
+  policyTypes:
+    - Ingress
