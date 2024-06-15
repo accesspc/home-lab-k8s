@@ -4,6 +4,10 @@
 
 This is one of the ways to setup Prometheus and Grafana on your Kubernetes cluster.
 
+Installs the kube-prometheus stack, a collection of Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator [source](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack).
+
+This thing installs a bunch of stuff, but not everything works on the local Lab without adjustments, thus there is the next option.
+
 ## Installation
 
 The following instructions are for a local Kubernetes cluster setup made up of 3 virtual machines.
