@@ -1,0 +1,72 @@
+---
+
+# Site
+site_name: Home Lab K8s
+site_description: ''
+site_author: accesspc (Github Organization)
+site_url: https://accesspc.github.io/home-lab-k8s/
+copyright: <p>&copy <a href="https://github.com/accesspc"><em>Robertas Reiciunas</em> @accesspc</a><br/><span>This project is licensed under the GPL-3.0 license.</span></p>
+
+# Project
+repo_name: home-lab-k8s
+repo_url: https://github.com/accesspc/home-lab-k8s
+
+docs_dir: docs/content/
+
+# mkdocs-material theme
+theme:
+  name: material
+  custom_dir: docs/overrides/
+  favicon: assets/img/k8s-logo.png
+  logo: assets/img/k8s-logo.png
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    # - content.action.edit
+    # - content.action.view
+    # - content.code.annotate
+    # - navigation.expand
+    # - navigation.instant
+    - navigation.tabs
+    # - navigation.top
+  palette:
+    - media: '(prefers-color-scheme: dark)'
+      scheme: default
+      primary: teal
+      accent: green
+      toggle:
+        icon: material/eye
+        name: Dark mode
+    - media: '(prefers-color-scheme: light)'
+      scheme: slate
+      primary: teal
+      accent: green
+      toggle:
+        icon: material/eye-outline
+        name: Light mode
+
+markdown_extensions:
+  - toc:
+      anchorlink: true
+
+# Plugins
+plugins:
+  - minify:
+      minify_html: true
+
+# Navigation
+nav:
+  - Home: index.md
+  - Defaults:
+      - defaults.md
+      - defaults/metrics-server.md
+      - defaults/kube-state-metrics.md
+      - defaults/dashboard.md
+      - defaults/cert-manager.md
+  - Monitoring:
+      - monitoring.md
+      - monitoring/kube-prometheus-stack.md
+  - System:
+      - system.md
+      - system/postgres.md
+      - system/keycloak.md
