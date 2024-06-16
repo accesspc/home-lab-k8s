@@ -16,19 +16,20 @@ docs_dir: docs/content/
 # mkdocs-material theme
 theme:
   name: material
-  custom_dir: docs/overrides/
+  # custom_dir: docs/overrides/
   favicon: assets/img/k8s-logo.png
-  logo: assets/img/k8s-logo.png
-  icon:
-    repo: fontawesome/brands/github
   features:
     # - content.action.edit
     # - content.action.view
     # - content.code.annotate
+    - content.code.copy
     # - navigation.expand
     # - navigation.instant
     - navigation.tabs
     # - navigation.top
+  icon:
+    repo: fontawesome/brands/github
+  logo: assets/img/k8s-logo.png
   palette:
     - media: '(prefers-color-scheme: dark)'
       scheme: default
@@ -46,6 +47,7 @@ theme:
         name: Light mode
 
 markdown_extensions:
+  - pymdownx.superfences
   - toc:
       anchorlink: true
 
