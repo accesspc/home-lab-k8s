@@ -10,11 +10,8 @@ data:
   prometheus.yml: |-
     ---
     global:
-      # Set the scrape interval to every 15 seconds. Default is every 1 minute.
       scrape_interval: 15s
-      # Evaluate rules every 15 seconds. The default is every 1 minute.
       evaluation_interval: 15s
-      # scrape_timeout is set to the global default (10s).
 
     # Alertmanager configuration
     alerting:
@@ -24,8 +21,7 @@ data:
                 - "alertmanager.monitoring.svc:9093"
 
     scrape_configs:
-      # The job name is added as a label `job=<job_name>` to any timeseries scraped
-      # from this config.
+
       - job_name: blackbox
         metrics_path: /probe
         params:
@@ -36,17 +32,27 @@ data:
           - source_labels:
               - __address__
             target_label: __param_target
+
           - source_labels:
               - __param_target
             target_label: instance
-          - target_label: __address__
-            replacement: blackbox.monitoring.svc.cluster.local:9115
+
+          - replacement: blackbox.monitoring.svc.cluster.local:9115
+            target_label: __address__
 
         static_configs:
           - targets:
               - reiciunas.dev
               - rubicbit.com
               - scoachingtherapy.com
+
+      - job_name: docker
+
+        static_configs:
+          - labels:
+              instance: store
+            targets:
+              - 192.168.68.3:9323
 
       - job_name: kube-state-metrics
 
@@ -176,42 +182,38 @@ data:
       - job_name: mysqld
 
         static_configs:
-          - targets:
-              - 10.16.0.115:9104
-            labels:
+          - labels:
               instance: aws-mysql01
+            targets:
+              - 10.16.0.115:9104
 
       - job_name: node
 
         static_configs:
-          - targets:
-              - 10.16.0.115:9100
-            labels:
+          - labels:
               instance: aws-mysql01
-          - targets:
-              - 10.16.4.208:9100
-            labels:
+            targets:
+              - 10.16.0.115:9100
+
+          - labels:
               instance: aws-vpn01
-          - targets:
-              - 10.16.4.129:9100
-            labels:
+            targets:
+              - 10.16.4.50:9100
+
+          - labels:
               instance: aws-web01
-          # - targets:
-          #     - 192.168.68.2:9100
-          #   labels:
-          #     instance: bl1
-          - targets:
-              - 100.85.71.13:9100
-            labels:
+            targets:
+              - 10.16.4.129:9100
+
+          - labels:
               instance: fh01
-          # - targets:
-          #     - 192.168.68.11:9100
-          #   labels:
-          #     instance: fw01
-          - targets:
-              - 192.168.68.3:9100
-            labels:
+            targets:
+              - 100.85.71.13:9100
+
+          - labels:
               instance: store
+            targets:
+              - 192.168.68.3:9100
 
       - job_name: node-exporter
 
@@ -244,11 +246,16 @@ data:
         tls_config:
           insecure_skip_verify: true
 
+      - job_name: wcac
+
+        scheme: http
+
+        static_configs:
+          - targets:
+              - 192.168.68.32:30800
+
   web_config.yml: |-
     ---
-    # basic_auth_users:
-    #   prometheus: sha
-
     http_server_config:
       http2: true
 
