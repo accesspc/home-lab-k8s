@@ -185,7 +185,7 @@ data:
           - labels:
               instance: aws-mysql01
             targets:
-              - 10.16.0.115:9104
+              - 10.16.0.130:9104
 
       - job_name: node
 
@@ -193,17 +193,17 @@ data:
           - labels:
               instance: aws-mysql01
             targets:
-              - 10.16.0.115:9100
+              - 10.16.0.130:9100
 
           - labels:
               instance: aws-vpn01
             targets:
-              - 10.16.4.50:9100
+              - 10.16.4.141:9100
 
           - labels:
               instance: aws-web01
             targets:
-              - 10.16.4.129:9100
+              - 10.16.4.122:9100
 
           - labels:
               instance: fh01
