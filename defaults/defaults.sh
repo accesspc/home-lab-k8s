@@ -39,6 +39,7 @@ kubectl apply -f defaults/dashboard/
 # cert-manager
 echo -e "\n=> cert-manager cli\n"
 latest=$(curl -sL https://api.github.com/repos/cert-manager/cert-manager/releases/latest | jq -r '.tag_name')
+mkdir -p ~/bin
 curl -fsSL -o ~/bin/cmctl https://github.com/cert-manager/cmctl/releases/latest/download/cmctl_linux_amd64
 chmod +x ~/bin/cmctl
 
