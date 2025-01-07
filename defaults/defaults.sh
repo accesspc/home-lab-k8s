@@ -48,7 +48,7 @@ echo -e "\n=> cert-manager\n"
 # OR
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
-helm upgrade --install \
+helm upgrade --install --timeout 20m \
   cert-manager jetstack/cert-manager \
   --namespace cert-manager \
   --create-namespace \
