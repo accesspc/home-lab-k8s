@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
-    app: {{ .Values.application.labels.app }}
+    app: {{ .Values.app.labels.app }}
   ports:
     - name: http
       port: 8080

@@ -5,23 +5,23 @@ metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Values.application.labels.app }}
+    app: {{ .Values.app.labels.app }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.application.labels.app }}
+      app: {{ .Values.app.labels.app }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: {{ .Values.application.labels.app }}
+        app: {{ .Values.app.labels.app }}
     spec:
       containers:
         - name: {{ .Release.Name }}
           image: quay.io/keycloak/keycloak:26.0.7
-          args: ["start", "--cache-stack=kubernetes", "--hostname", "{{ .Values.application.hostname }}"]
+          args: ["start", "--cache-stack=kubernetes", "--hostname", "{{ .Values.app.hostname }}"]
           env:
             - name: KEYCLOAK_ADMIN_PASSWORD
               valueFrom:
@@ -80,4 +80,4 @@ spec:
       volumes:
         - name: tls-crt
           secret:
-            secretName: {{ .Values.application.hostname }}-tls
+            secretName: {{ .Values.app.hostname }}-tls

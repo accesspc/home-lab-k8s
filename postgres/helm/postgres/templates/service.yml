@@ -6,6 +6,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
-    app: {{ .Values.application.labels.app }}
+    app: {{ .Values.app.labels.app }}
   ports:
     - port: 5432

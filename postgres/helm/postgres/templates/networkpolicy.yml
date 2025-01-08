@@ -32,6 +32,6 @@ spec:
           port: 5432
   podSelector:
     matchLabels:
-      app: {{ .Values.application.labels.app }}
+      app: {{ .Values.app.labels.app }}
   policyTypes:
     - Ingress

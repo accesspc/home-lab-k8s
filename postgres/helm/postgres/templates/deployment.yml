@@ -5,18 +5,18 @@ metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Values.application.labels.app }}
+    app: {{ .Values.app.labels.app }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.application.labels.app }}
+      app: {{ .Values.app.labels.app }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: {{ .Values.application.labels.app }}
+        app: {{ .Values.app.labels.app }}
     spec:
       containers:
         - name: {{ .Release.Name }}
@@ -71,12 +71,12 @@ spec:
       serviceAccount: {{ .Release.Name }}
       volumes:
         - name: data-volume
-          {{- if eq .Values.application.dataVolume.type "pvc_nfs" }}
+          {{- if eq .Values.app.dataVolume.type "pvc_nfs" }}
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-pvc
           {{- else }}
           emptyDir:
-            sizeLimit: {{ .Values.application.dataVolume.size }}
+            sizeLimit: {{ .Values.app.dataVolume.size }}
           {{- end }}
         - name: init-db
           configMap:

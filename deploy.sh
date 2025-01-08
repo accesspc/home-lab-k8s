@@ -6,8 +6,10 @@ cd $(dirname -- "${BASH_SOURCE[0]}")
 opt=""
 
 function show_opts() {
-  clear
+  # clear
   cat <<EOF
+
+========================================================
  ____  __. ______             .____          ___.    
 |    |/ _|/  __  \  ______    |    |   _____ \_ |__  
 |      <  >      < /  ___/    |    |   \__  \ | __ \ 
@@ -41,11 +43,11 @@ while [[ "x$opt" != "xx" ]] ; do
     exit 0
   fi
 
-  read -p "[i]nstall or [r]emove: " yn
+  read -p "[I]nstall or [r]emove: " yn
 
   # kube-system: metrics-server
-  if [[ "x$opt" == "x1" ]] ; then
-    if [[ "x$yn" == "xi" ]] ; then
+  if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x1" ]] ; then
+    if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
       kubectl apply -f metrics-server
 
       kubectl -n kube-system wait pods --selector k8s-app=metrics-server --for=condition=Ready --timeout=90s
@@ -56,8 +58,8 @@ while [[ "x$opt" != "xx" ]] ; do
   fi
   
   # kube-system: kube-state-metrics
-  if [[ "x$opt" == "x2" ]] ; then
-    if [[ "x$yn" == "xi" ]] ; then
+  if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x2" ]] ; then
+    if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
       helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
       helm repo update
       helm upgrade --install -n kube-system kube-state-metrics prometheus-community/kube-state-metrics
@@ -70,8 +72,8 @@ while [[ "x$opt" != "xx" ]] ; do
   fi
 
   # kubernetes-dashboard
-  if [[ "x$opt" == "x3" ]] ; then
-    if [[ "x$yn" == "xi" ]] ; then
+  if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x3" ]] ; then
+    if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
       kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 
       echo -e "\n==> dashboard: pods:\n"
@@ -90,8 +92,8 @@ while [[ "x$opt" != "xx" ]] ; do
   fi
 
   # cert-manager
-  if [[ "x$opt" == "x4" ]] ; then
-    if [[ "x$yn" == "xi" ]] ; then
+  if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x4" ]] ; then
+    if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
       if [ ! -f cert-manager/clusterissuer.yml ] ; then
         echo "> Missing file: cert-manager/clusterissuer.yml"
         echo "> Create from template provided in cert-manager/clusterissuer.yml.sample.* "
@@ -140,8 +142,8 @@ while [[ "x$opt" != "xx" ]] ; do
   fi
 
   # postgres
-  if [[ "x$opt" == "x5" ]] ; then
-    if [[ "x$yn" == "xi" ]] ; then
+  if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x5" ]] ; then
+    if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
       if [ ! -f postgres/helm/postgres/templates/secret.yml ] ; then
         read -s -p "==> Enter postgres password: " pg_pwd
         pg_pwd=$(echo -n $pg_pwd | base64)
@@ -168,8 +170,8 @@ while [[ "x$opt" != "xx" ]] ; do
   fi
 
   # keycloak
-  if [[ "x$opt" == "x6" ]] ; then
-    if [[ "x$yn" == "xi" ]] ; then
+  if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x6" ]] ; then
+    if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
       if [ ! -f keycloak/helm/keycloak/templates/secret.yml ] ; then
         read -s -p "==> Enter keycloak password: " kc_pwd
         kc_pwd=$(echo -n $kc_pwd | base64)
@@ -194,9 +196,6 @@ while [[ "x$opt" != "xx" ]] ; do
       fi
     fi
   fi
-
-  echo
-  read -p "Enter to continue..."
 
 done
 

@@ -1,5 +1,5 @@
 ---
-{{- if eq .Values.application.dataVolume.type "pvc_nfs" }}
+{{- if eq .Values.app.dataVolume.type "pvc_nfs" }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -10,7 +10,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.application.dataVolume.size }}
-  storageClassName: {{ .Values.application.pvc.nfs.path.storageClassName }}
+      storage: {{ .Values.app.dataVolume.size }}
+  storageClassName: {{ .Values.app.pvc.nfs.path.storageClassName }}
   volumeMode: Filesystem
 {{- end }}

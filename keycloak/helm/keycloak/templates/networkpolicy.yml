@@ -11,6 +11,6 @@ spec:
           port: 8443
   podSelector:
     matchLabels:
-      app: {{ .Values.application.labels.app }}
+      app: {{ .Values.app.labels.app }}
   policyTypes:
     - Ingress
