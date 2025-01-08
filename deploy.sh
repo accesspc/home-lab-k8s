@@ -16,7 +16,7 @@ Help:
   Prompt options:
     i - install
     r - remove
-    s/Enter - skip
+    s - skip (or just press Enter)
 
 EOF
 
@@ -74,6 +74,20 @@ fi
 echo
 read -p "=> cert-manager [i/r/S]: " yn
 if [[ "x$yn" == "xi" ]] ; then
+  if [ ! -f cert-manager/clusterissuer.yml ] ; then
+    echo "> Missing file: cert-manager/clusterissuer.yml"
+    echo "> Create from template provided in cert-manager/clusterissuer.yml.sample.* "
+    echo "> or using documentation in https://cert-manager.io/docs/configuration/"
+    exit 1
+  fi
+
+  if [ ! -f cert-manager/secret.yml ] ; then
+    echo "> Missing file: cert-manager/secret.yml"
+    echo "> Create from template provided in cert-manager/secret.yml.sample.* "
+    echo "> or using documentation in https://cert-manager.io/docs/configuration/"
+    exit 1
+  fi
+
   latest=$(curl -sL https://api.github.com/repos/cert-manager/cert-manager/releases/latest | jq -r '.tag_name')
   if [ ! -x ~/bin/cmctl ] ; then
     mkdir -p ~/bin
