@@ -3,7 +3,7 @@
 
 # Git ignore all secret.yml files, except:
 secret.yml
-!dashboard/secret.yml
+!kubernetes-dashboard/secret.yml
 
 # mkdocs build artifacts
 /site
