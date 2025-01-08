@@ -10,7 +10,7 @@ spec:
   issuerRef:
     kind: ClusterIssuer
     name: {{ .Values.application.cert.issuerName }}
-  secretName: {{ .Values.application.hostname }}-secret
+  secretName: {{ .Values.application.hostname }}-tls
   subject:
     organizations:
       {{- toYaml .Values.application.cert.orgs | nindent 6 }}
