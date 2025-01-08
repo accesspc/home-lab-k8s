@@ -37,6 +37,10 @@ while [[ "x$opt" != "xx" ]] ; do
   show_opts
 
   read -p "Choose an option: " opt
+  if [[ "x$opt" == "xx" ]] ; then
+    exit 0
+  fi
+
   read -p "[i]nstall or [r]emove: " yn
 
   # kube-system: metrics-server
@@ -191,6 +195,7 @@ while [[ "x$opt" != "xx" ]] ; do
     fi
   fi
 
+  echo
   read -p "Enter to continue..."
 
 done
