@@ -4,38 +4,55 @@ set -e
 
 cd $(dirname -- "${BASH_SOURCE[0]}")
 
-# metrics-server
-read -p "=> metrics-server [Y/n]: " yn_ms
-if [[ "x$yn_ms" == "xy" ]] || [[ "x$yn_ms" == "xY" ]] || [[ "x$yn_ms" == "x" ]] ; then
-  echo -e "\n==> metrics-server: apply:\n"
-  kubectl apply -f metrics-server
+cat <<EOF
+ ____  __. ______             .____          ___.    
+|    |/ _|/  __  \  ______    |    |   _____ \_ |__  
+|      <  >      < /  ___/    |    |   \__  \ | __ \ 
+|    |  \/   --   \\\\___ \     |    |___ / __ \| \_\ \ 
+|____|__ \______  /____  >    |_______ (____  /___  /
+        \/      \/     \/             \/    \/    \/ 
 
-  echo -e "\n==> metrics-server: pods\n"
-  kubectl -n kube-system wait pods --selector k8s-app=metrics-server --for=condition=Ready --timeout=90s
-  kubectl -n kube-system get pods --selector k8s-app=metrics-server
-fi
+Help:
+  Prompt options:
+    i - install
+    r - remove
+    s/Enter - skip
+
+EOF
+
+# kube-system: metrics-server
 
 echo
+read -p "=> kube-system: metrics-server [i/r/S]: " yn
+if [[ "x$yn" == "xi" ]] ; then
+  kubectl apply -f metrics-server
 
-# kube-state-metrics
-read -p "=> kube-state-metrics [Y/n]: " yn_ksm
-if [[ "x$yn_ksm" == "xy" ]] || [[ "x$yn_ksm" == "xY" ]] || [[ "x$yn_ksm" == "x" ]] ; then
-  echo -e "\n==> kube-state-metrics: helm install:\n"
+  kubectl -n kube-system wait pods --selector k8s-app=metrics-server --for=condition=Ready --timeout=90s
+  kubectl -n kube-system get pods --selector k8s-app=metrics-server
+elif [[ "x$yn" == "xr" ]] ; then
+  kubectl delete -f metrics-server
+fi
+
+# kube-system: kube-state-metrics
+
+echo
+read -p "=> kube-system: kube-state-metrics [i/r/S]: " yn
+if [[ "x$yn" == "xi" ]] ; then
   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
   helm repo update
   helm upgrade --install -n kube-system kube-state-metrics prometheus-community/kube-state-metrics
 
-  echo -e "\n==> kube-state-metrics: pods:\n"
   kubectl -n kube-system wait pods --selector app.kubernetes.io/name=kube-state-metrics --for=condition=Ready --timeout=90s
   kubectl -n kube-system get pods --selector app.kubernetes.io/name=kube-state-metrics
+elif [[ "x$yn" == "xr" ]] ; then
+  helm uninstall -n kube-system kube-state-metrics
 fi
 
-echo
+# kubernetes-dashboard
 
-# dashboard
-read -p "=> dashboard [Y/n]: " yn_d
-if [[ "x$yn_d" == "xy" ]] || [[ "x$yn_d" == "xY" ]] || [[ "x$yn_d" == "x" ]] ; then
-  echo -e "\n==> dashboard: apply:\n"
+echo
+read -p "=> kubernetes-dashboard [i/r/S]: " yn
+if [[ "x$yn" == "xi" ]] ; then
   kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 
   echo -e "\n==> dashboard: pods:\n"
@@ -44,17 +61,19 @@ if [[ "x$yn_d" == "xy" ]] || [[ "x$yn_d" == "xY" ]] || [[ "x$yn_d" == "x" ]] ; t
   kubectl -n kubernetes-dashboard get pods
 
   echo -e "\n==> dashboard: apply:\n"
-  kubectl apply -f dashboard/
+  kubectl apply -f kubernetes-dashboard/
   for i in $(seq 1 3) ; do echo -n "." ; sleep 1 ; done ; echo 
-  kubectl apply -f dashboard/
+  kubectl apply -f kubernetes-dashboard/
+elif [[ "x$yn" == "xr" ]] ; then
+  kubectl delete -f kubernetes-dashboard/
+  kubectl delete -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 fi
 
-echo
-
 # cert-manager
-read -p "=> cert-manager [Y/n]: " yn_cm
-if [[ "x$yn_cm" == "xy" ]] || [[ "x$yn_cm" == "xY" ]] || [[ "x$yn_cm" == "x" ]] ; then
-  echo -e "\n==> cert-manager: cli:\n"
+
+echo
+read -p "=> cert-manager [i/r/S]: " yn
+if [[ "x$yn" == "xi" ]] ; then
   latest=$(curl -sL https://api.github.com/repos/cert-manager/cert-manager/releases/latest | jq -r '.tag_name')
   if [ ! -x ~/bin/cmctl ] ; then
     mkdir -p ~/bin
@@ -81,6 +100,8 @@ if [[ "x$yn_cm" == "xy" ]] || [[ "x$yn_cm" == "xY" ]] || [[ "x$yn_cm" == "x" ]] 
   kubectl -n cert-manager wait pods --selector app.kubernetes.io/instance=cert-manager --for=condition=Ready --timeout=90s
   kubectl -n cert-manager get pods
   echo
+elif [[ "x$yn" == "xr" ]] ; then
+  kubectl delete -f cert-manager
+  helm uninstall -n cert-manager cert-manager
+  rm -f ~/bin/cmctl
 fi
-
-echo "Done"
