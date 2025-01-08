@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-env-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.application.labels.app }}
+data:
+  KC_DB_PASSWORD: {{ .Values.application.db.password }}
+  KC_DB_URL_DATABASE: {{ .Values.application.db.name }}
+  KC_DB_URL_HOST: {{ .Values.application.db.host }}
+  KC_DB_USERNAME: {{ .Values.application.db.username }}
+  KC_DB: {{ .Values.application.db.type }}
+  KC_HEALTH_ENABLED: "true"
+  KC_HOSTNAME_ADMIN_URL: "https://{{ .Values.application.hostname }}:30443/"
+  KC_HOSTNAME_URL: "https://{{ .Values.application.hostname }}:30443/"
+  KC_HTTP_ENABLED: "true"
+  KC_HTTP_RELATIVE_PATH: /
+  KC_HTTPS_CERTIFICATE_FILE: $${kc.home.dir}/conf/tls/tls.crt
+  KC_HTTPS_CERTIFICATE_KEY_FILE: $${kc.home.dir}/conf/tls/tls.key
+  KC_METRICS_ENABLED: "true"
+  KEYCLOAK_ADMIN: admin
+  jgroups.dns.query: keycloak
+  PROXY_ADDRESS_FORWARDING: "true"

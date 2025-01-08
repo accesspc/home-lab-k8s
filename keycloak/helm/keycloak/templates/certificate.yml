@@ -1,0 +1,19 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .Values.application.hostname }}-tls
+  namespace: {{ .Release.Namespace }}
+spec:
+  dnsNames:
+    {{- toYaml .Values.application.cert.dnsNames | nindent 4 }}
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ .Values.application.cert.issuerName }}
+  secretName: {{ .Values.application.hostname }}-secret
+  subject:
+    organizations:
+      {{- toYaml .Values.application.cert.orgs | nindent 6 }}
+  usages:
+    - client auth
+    - server auth

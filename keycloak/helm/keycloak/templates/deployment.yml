@@ -20,32 +20,42 @@ spec:
     spec:
       containers:
         - name: {{ .Release.Name }}
-          image: postgres
+          image: quay.io/keycloak/keycloak:26.0.7
+          args: ["start", "--cache-stack=kubernetes", "--hostname", "{{ .Values.application.hostname }}"]
           env:
-            - name: POSTGRES_PASSWORD
+            - name: KEYCLOAK_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Release.Name }}-pwd
-                  key: POSTGRES_PASSWORD
+                  key: KEYCLOAK_ADMIN_PASSWORD
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-env-config
           ports:
-            - containerPort: 5432
+            - name: jgroups
+              containerPort: 7600
+            - name: http
+              containerPort: 8080
+            - name: https
+              containerPort: 8443
           livenessProbe:
-            exec:
-              command: ["pg_isready", "-U", "postgres"]
+            httpGet:
+              path: /realms/master
+              port: 8080
+              scheme: HTTP
             periodSeconds: 15
           readinessProbe:
-            exec:
-              command: ["pg_isready", "-U", "postgres"]
+            httpGet:
+              path: /realms/master
+              port: 8080
+              scheme: HTTP
             periodSeconds: 15
           resources:
             requests:
-              cpu: 20m
-              memory: 100Mi
+              cpu: 100m
+              memory: 500Mi
             limits:
-              memory: 200Mi
+              memory: 600Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -56,29 +66,18 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           startupProbe:
-            failureThreshold: 10
-            exec:
-              command: ["pg_isready", "-U", "postgres"]
+            failureThreshold: 20
+            httpGet:
+              path: /realms/master
+              port: 8080
+              scheme: HTTP
             initialDelaySeconds: 10
             periodSeconds: 5
           volumeMounts:
-            - name: data-volume
-              mountPath: /var/lib/postgresql/data
-            - name: init-db
-              mountPath: /docker-entrypoint-initdb.d
-      securityContext:
-        fsGroup: 26
+            - name: tls-crt
+              mountPath: /opt/keycloak/conf/tls
       serviceAccount: {{ .Release.Name }}
       volumes:
-        - name: data-volume
-          {{- if eq .Values.application.dataVolume.type "pvc_nfs" }}
-          persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-pvc
-          {{- else }}
-          emptyDir:
-            sizeLimit: {{ .Values.application.dataVolume.size }}
-          {{- end }}
-        - name: init-db
-          configMap:
-            name: {{ .Release.Name }}-db-config
-            defaultMode: 0555
+        - name: tls-crt
+          secret:
+            secretName: {{ .Values.application.cert.name }}-tls

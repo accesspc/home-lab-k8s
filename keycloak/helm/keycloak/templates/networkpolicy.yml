@@ -2,8 +2,8 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-ingress-keycloak
-  namespace: system
+  name: allow-apps-to-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
 spec:
   ingress:
     - ports:
@@ -11,6 +11,6 @@ spec:
           port: 8443
   podSelector:
     matchLabels:
-      app: keycloak
+      app: {{ .Values.application.labels.app }}
   policyTypes:
     - Ingress

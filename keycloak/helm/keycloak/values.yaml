@@ -1,0 +1,21 @@
+# Default values for keycloak.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+application:
+  db:
+    host: postgres
+    name: keycloak
+    password: keycloak
+    type: postgres
+    username: keycloak
+  cert:
+    dnsNames:
+      - keycloak.example.com
+    issuerName: letsencrypt-prod
+    orgs:
+      - example.com
+  hostname: keycloak.example.com
+
+  labels:
+    app: keycloak

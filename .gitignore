@@ -10,3 +10,4 @@ secret.yml
 
 # helm
 **/helm/*/charts
+**/helm/values.yaml
