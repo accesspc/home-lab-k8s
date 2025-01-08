@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-db-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.application.labels.app }}
+data:
+  {{- range $db := .Values.application.dbs }}
+  00-{{ $db.name }}.sql: |-
+    CREATE DATABASE {{ $db.name }};
+    CREATE USER {{ $db.user }} WITH SUPERUSER PASSWORD '{{ $db.password }}';
+    GRANT ALL PRIVILEGES ON DATABASE {{ $db.name }} TO {{ $db.user }};
+  {{- end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-env-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.application.labels.app }}
+data:
+  PGDATA: /var/lib/postgresql/data/pgdata
+  POSTGRES_DB: psql
+  POSTGRES_USER: postgres

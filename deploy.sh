@@ -119,3 +119,31 @@ elif [[ "x$yn" == "xr" ]] ; then
   helm uninstall -n cert-manager cert-manager
   rm -f ~/bin/cmctl
 fi
+
+# postgres
+
+echo
+read -p "=> postgres [i/r/S]: " yn
+if [[ "x$yn" == "xi" ]] ; then
+  if [ ! -f postgres/helm/postgres/templates/secret.yml ] ; then
+    read -s -p "==> Enter postgres password: " pg_pwd
+    pg_pwd=$(echo -n $pg_pwd | base64)
+    cat postgres/helm/postgres/templates/_secret.yml | sed "s/_PG_PWD_/$pg_pwd/g" > postgres/helm/postgres/templates/secret.yml
+  fi
+
+  echo -e "\n==> postgres: helm install:\n"
+  helm upgrade --install --timeout 20m \
+    postgres postgres/helm/postgres \
+    --namespace system \
+    --create-namespace \
+    -f postgres/helm/values.yaml
+  
+  kubectl -n system wait pods --selector app=postgres --for=condition=Ready --timeout=90s
+
+elif [[ "x$yn" == "xr" ]] ; then
+  helm uninstall -n system postgres
+  read -p "==> Delete system namespace [y/N]: " yn
+  if [[ "x$yn" == "xy" ]] || [[ "x$yn" == "xY" ]] ; then
+    kubectl delete namespace system
+  fi
+fi

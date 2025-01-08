@@ -2,34 +2,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
-  namespace: system
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: postgres
+    app: {{ .Values.application.labels.app }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres
+      app: {{ .Values.application.labels.app }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: postgres
+        app: {{ .Values.application.labels.app }}
     spec:
       containers:
-        - name: postgres
+        - name: {{ .Release.Name }}
           image: postgres
           env:
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
+                  name: {{ .Release.Name }}-secret
                   key: POSTGRES_PASSWORD
           envFrom:
             - configMapRef:
-                name: postgres-env-config
+                name: {{ .Release.Name }}-env-config
           ports:
             - containerPort: 5432
           livenessProbe:
@@ -40,18 +40,27 @@ spec:
             exec:
               command: ["pg_isready", "-U", "postgres"]
             periodSeconds: 15
-          startupProbe:
-            failureThreshold: 10
-            exec:
-              command: ["pg_isready", "-U", "postgres"]
-            initialDelaySeconds: 10
-            periodSeconds: 5
           resources:
             requests:
               cpu: 20m
               memory: 100Mi
             limits:
               memory: 200Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          startupProbe:
+            failureThreshold: 10
+            exec:
+              command: ["pg_isready", "-U", "postgres"]
+            initialDelaySeconds: 10
+            periodSeconds: 5
           volumeMounts:
             - name: data-volume
               mountPath: /var/lib/postgresql/data
@@ -59,12 +68,17 @@ spec:
               mountPath: /docker-entrypoint-initdb.d
       securityContext:
         fsGroup: 26
-      serviceAccount: postgres
+      serviceAccount: {{ .Release.Name }}
       volumes:
         - name: data-volume
+          {{- if eq .Values.application.dataVolume.type "pvc_nfs" }}
           persistentVolumeClaim:
-            claimName: postgres-pvc
+            claimName: {{ .Release.Name }}-pvc
+          {{- else }}
+          emptyDir:
+            sizeLimit: {{ .Values.application.dataVolume.size }}
+          {{- end }}
         - name: init-db
           configMap:
-            name: postgres-db-config
+            name: {{ .Release.Name }}-db-config
             defaultMode: 0555

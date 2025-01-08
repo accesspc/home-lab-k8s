@@ -1,0 +1,16 @@
+---
+{{- if eq .Values.application.dataVolume.type "pvc_nfs" }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-pvc
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.application.dataVolume.size }}
+  storageClassName: {{ .Values.application.pvc.nfs.path.storageClassName }}
+  volumeMode: Filesystem
+{{- end }}

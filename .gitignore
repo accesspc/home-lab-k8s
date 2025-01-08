@@ -7,3 +7,6 @@ secret.yml
 
 # mkdocs build artifacts
 /site
+
+# helm
+**/helm/*/charts

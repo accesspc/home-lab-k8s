@@ -1,0 +1,21 @@
+---
+{{- if eq .Values.application.dataVolume.type "pvc_nfs" }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-pv
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: {{ .Values.application.pv.size }}
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: {{ .Values.application.pv.nfs.path }}
+    server: {{ .Values.application.pv.nfs.server }}
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ .Values.application.pv.storageClassName }}
+  volumeMode: Filesystem
+{{- end }}
