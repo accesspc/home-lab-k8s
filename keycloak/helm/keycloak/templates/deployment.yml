@@ -5,21 +5,21 @@ metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Values.app.labels.app }}
+    app: keycloak
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.app.labels.app }}
+      app: keycloak
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: {{ .Values.app.labels.app }}
+        app: keycloak
     spec:
       containers:
-        - name: {{ .Release.Name }}
+        - name: keycloak
           image: quay.io/keycloak/keycloak:26.0.7
           args: ["start", "--cache-stack=kubernetes", "--hostname", "{{ .Values.app.hostname }}"]
           env:
