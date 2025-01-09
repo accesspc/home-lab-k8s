@@ -59,10 +59,10 @@ spec:
               scheme: HTTPS
             periodSeconds: 15
           resources:
+            limits:
+              memory: 768Mi
             requests:
               cpu: 37m
-              memory: 768Mi
-            limits:
               memory: 768Mi
           securityContext:
             allowPrivilegeEscalation: false
@@ -118,7 +118,7 @@ spec:
         #     capabilities:
         #       add:
         #         - NET_ADMIN
-      serviceAccount: {{ .Release.Name }}
+      serviceAccount: prometheus
       volumes:
         - name: config-volume
           configMap:

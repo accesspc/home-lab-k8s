@@ -11,5 +11,6 @@ spec:
   selector:
     app: blackbox
   ports:
-    - port: 9115
+    - name: blackbox
+      port: 9115
       targetPort: 9115
