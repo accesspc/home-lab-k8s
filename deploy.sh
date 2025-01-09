@@ -191,18 +191,18 @@ while [[ "x$opt" != "xx" ]] ; do
   if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x6" ]] ; then
     # install / remove
     if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
-      if [ ! -f keycloak/helm/keycloak/templates/secret.yml ] ; then
+      if [ ! -f helm/keycloak/templates/secret.yml ] ; then
         read -s -p "==> Enter keycloak password: " kc_pwd
         kc_pwd=$(echo -n $kc_pwd | base64)
-        cat keycloak/helm/keycloak/templates/_secret.yml | sed "s/_KC_PWD_/$kc_pwd/g" > keycloak/helm/keycloak/templates/secret.yml
+        cat helm/keycloak/templates/_secret.yml | sed "s/_KC_PWD_/$kc_pwd/g" > helm/keycloak/templates/secret.yml
       fi
 
       echo -e "\n==> keycloak: helm install:\n"
       helm upgrade --install --timeout 20m \
-        keycloak keycloak/helm/keycloak \
+        keycloak helm/keycloak \
         --namespace $select_ns \
         --create-namespace \
-        -f keycloak/helm/values.yaml
+        -f helm/keycloak.yaml
 
       kubectl -n $select_ns wait pods --selector app=keycloak --for=condition=Ready --timeout=90s
 
