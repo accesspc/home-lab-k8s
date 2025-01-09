@@ -21,7 +21,7 @@ spec:
       containers:
         - name: keycloak
           image: quay.io/keycloak/keycloak:26.0.7
-          args: ["start", "--cache-stack=kubernetes", "--hostname", "{{ .Values.app.hostname }}"]
+          args: ["start", "--cache-stack=kubernetes", "--hostname", "{{ .Values.keycloak.hostname }}"]
           env:
             - name: KEYCLOAK_ADMIN_PASSWORD
               valueFrom:
@@ -80,4 +80,4 @@ spec:
       volumes:
         - name: tls-crt
           secret:
-            secretName: {{ .Values.app.hostname }}-tls
+            secretName: {{ .Values.keycloak.hostname }}-tls

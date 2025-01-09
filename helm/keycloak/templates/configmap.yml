@@ -7,14 +7,14 @@ metadata:
   labels:
     app: keycloak
 data:
-  KC_DB_PASSWORD: {{ .Values.app.db.password }}
-  KC_DB_URL_DATABASE: {{ .Values.app.db.name }}
-  KC_DB_URL_HOST: {{ .Values.app.db.host }}
-  KC_DB_USERNAME: {{ .Values.app.db.username }}
-  KC_DB: {{ .Values.app.db.type }}
+  KC_DB_PASSWORD: {{ .Values.keycloak.db.password }}
+  KC_DB_URL_DATABASE: {{ .Values.keycloak.db.name }}
+  KC_DB_URL_HOST: {{ .Values.keycloak.db.host }}
+  KC_DB_USERNAME: {{ .Values.keycloak.db.username }}
+  KC_DB: {{ .Values.keycloak.db.type }}
   KC_HEALTH_ENABLED: "true"
-  KC_HOSTNAME_ADMIN_URL: "https://{{ .Values.app.hostname }}:30443/"
-  KC_HOSTNAME_URL: "https://{{ .Values.app.hostname }}:30443/"
+  KC_HOSTNAME_ADMIN_URL: "https://{{ .Values.keycloak.hostname }}:30443/"
+  KC_HOSTNAME_URL: "https://{{ .Values.keycloak.hostname }}:30443/"
   KC_HTTP_ENABLED: "true"
   KC_HTTP_RELATIVE_PATH: /
   KC_HTTPS_CERTIFICATE_FILE: $${kc.home.dir}/conf/tls/tls.crt

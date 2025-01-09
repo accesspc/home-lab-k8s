@@ -7,7 +7,7 @@ metadata:
   labels:
     app: postgres
 data:
-  {{- range $db := .Values.app.dbs }}
+  {{- range $db := .Values.postgres.dbs }}
   00-{{ $db.name }}.sql: |-
     CREATE DATABASE {{ $db.name }};
     CREATE USER {{ $db.user }} WITH SUPERUSER PASSWORD '{{ $db.password }}';

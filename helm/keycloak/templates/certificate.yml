@@ -2,18 +2,18 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: {{ .Values.app.hostname }}-tls
+  name: {{ .Values.keycloak.hostname }}-tls
   namespace: {{ .Release.Namespace }}
 spec:
   dnsNames:
-    {{- toYaml .Values.app.cert.dnsNames | nindent 4 }}
+    {{- toYaml .Values.keycloak.cert.dnsNames | nindent 4 }}
   issuerRef:
     kind: ClusterIssuer
-    name: {{ .Values.app.cert.issuerName }}
-  secretName: {{ .Values.app.hostname }}-tls
+    name: {{ .Values.keycloak.cert.issuerName }}
+  secretName: {{ .Values.keycloak.hostname }}-tls
   subject:
     organizations:
-      {{- toYaml .Values.app.cert.orgs | nindent 6 }}
+      {{- toYaml .Values.keycloak.cert.orgs | nindent 6 }}
   usages:
     - client auth
     - server auth

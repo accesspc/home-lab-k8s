@@ -71,12 +71,12 @@ spec:
       serviceAccount: {{ .Release.Name }}
       volumes:
         - name: data-volume
-          {{- if eq .Values.app.dataVolume.type "pvc_nfs" }}
+          {{- if eq .Values.postgres.dataVolume.type "pvc_nfs" }}
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-pvc
           {{- else }}
           emptyDir:
-            sizeLimit: {{ .Values.app.dataVolume.size }}
+            sizeLimit: {{ .Values.postgres.dataVolume.size }}
           {{- end }}
         - name: init-db
           configMap:

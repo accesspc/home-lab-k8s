@@ -1,5 +1,5 @@
 ---
-{{- if eq .Values.app.dataVolume.type "pvc_nfs" }}
+{{- if eq .Values.postgres.dataVolume.type "pvc_nfs" }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -8,14 +8,14 @@ spec:
   accessModes:
     - ReadWriteMany
   capacity:
-    storage: {{ .Values.app.pv.size }}
+    storage: {{ .Values.postgres.pv.size }}
   mountOptions:
     - hard
     - nfsvers=4.1
   nfs:
-    path: {{ .Values.app.pv.nfs.path }}
-    server: {{ .Values.app.pv.nfs.server }}
+    path: {{ .Values.postgres.pv.nfs.path }}
+    server: {{ .Values.postgres.pv.nfs.server }}
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: {{ .Values.app.pv.storageClassName }}
+  storageClassName: {{ .Values.postgres.pv.storageClassName }}
   volumeMode: Filesystem
 {{- end }}
