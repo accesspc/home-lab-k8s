@@ -32,6 +32,6 @@ spec:
           port: 5432
   podSelector:
     matchLabels:
-      app: {{ .Values.app.labels.app }}
+      app: postgres
   policyTypes:
     - Ingress

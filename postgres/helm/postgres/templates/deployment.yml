@@ -5,18 +5,18 @@ metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Values.app.labels.app }}
+    app: postgres
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.app.labels.app }}
+      app: postgres
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: {{ .Values.app.labels.app }}
+        app: postgres
     spec:
       containers:
         - name: {{ .Release.Name }}

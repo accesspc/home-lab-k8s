@@ -5,7 +5,7 @@ metadata:
   name: {{ .Release.Name }}-db-config
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Values.app.labels.app }}
+    app: postgres
 data:
   {{- range $db := .Values.app.dbs }}
   00-{{ $db.name }}.sql: |-
@@ -21,7 +21,7 @@ metadata:
   name: {{ .Release.Name }}-env-config
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Values.app.labels.app }}
+    app: postgres
 data:
   PGDATA: /var/lib/postgresql/data/pgdata
   POSTGRES_DB: psql
