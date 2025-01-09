@@ -23,6 +23,32 @@ data:
 
     scrape_configs:
 
+      {{- if and .Values.blackbox.enabled .Values.blackbox.targets }}
+
+      - job_name: blackbox
+        metrics_path: /probe
+        params:
+          module:
+            - http_2xx
+
+        relabel_configs:
+          - source_labels:
+              - __address__
+            target_label: __param_target
+
+          - source_labels:
+              - __param_target
+            target_label: instance
+
+          - replacement: blackbox.{{ .Release.Namespace }}.svc.cluster.local:9115
+            target_label: __address__
+
+        static_configs:
+          - targets:
+              {{- toYaml .Values.blackbox.targets | nindent 14 }}
+
+      {{- end }}
+
       - job_name: kube-state-metrics
 
         static_configs:

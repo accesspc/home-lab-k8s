@@ -3,9 +3,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: blackbox
-  namespace: monitoring
+  namespace: {{ .Release.Namespace }}
   labels:
     app: blackbox
+    release: {{ .Release.Name }}
 spec:
   replicas: 1
   selector:
@@ -33,6 +34,21 @@ spec:
               port: 9115
               scheme: HTTP
             periodSeconds: 15
+          resources:
+            requests:
+              cpu: 10m
+              memory: 100Mi
+            limits:
+              memory: 100Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
           startupProbe:
             failureThreshold: 20
             httpGet:
@@ -41,12 +57,6 @@ spec:
               scheme: HTTP
             initialDelaySeconds: 10
             periodSeconds: 5
-          resources:
-            requests:
-              cpu: 10m
-              memory: 100Mi
-            limits:
-              memory: 100Mi
           volumeMounts:
             - name: config-volume
               mountPath: /etc/blackbox_exporter

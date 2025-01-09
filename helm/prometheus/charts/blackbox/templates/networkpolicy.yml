@@ -2,15 +2,15 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-ingress-blackbox
-  namespace: monitoring
+  name: allow-ingress-to-blackbox
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: blackbox
+    release: {{ .Release.Name }}
 spec:
   ingress:
     - from:
-        - namespaceSelector:
-            matchLabels:
-              ns: monitoring
-          podSelector:
+        - podSelector:
             matchLabels:
               app: prometheus
       ports:

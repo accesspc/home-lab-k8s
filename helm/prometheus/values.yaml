@@ -20,6 +20,8 @@ prometheus:
 blackbox:
   enabled: false
 
+  targets: []
+
 netload:
   enabled: false
 
