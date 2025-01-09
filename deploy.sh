@@ -10,12 +10,12 @@ function show_opts() {
   cat <<EOF
 
 ========================================================
- ____  __. ______             .____          ___.    
-|    |/ _|/  __  \  ______    |    |   _____ \_ |__  
+ ____  __. ______             .____          ___.
+|    |/ _|/  __  \  ______    |    |   _____ \_ |__
 |      <  >      < /  ___/    |    |   \__  \ | __ \ 
 |    |  \/   --   \\\\___ \     |    |___ / __ \| \_\ \ 
 |____|__ \______  /____  >    |_______ (____  /___  /
-        \/      \/     \/             \/    \/    \/ 
+        \/      \/     \/             \/    \/    \/
 
 Options:
 
@@ -28,6 +28,7 @@ Options:
 
   5 - postgres
   6 - keycloak
+  7 - monitoring
 
   x - exit (or Ctrl+C)
 
@@ -38,12 +39,33 @@ while [[ "x$opt" != "xx" ]] ; do
 
   show_opts
 
-  read -p "Choose an option: " opt
+  read -p "> Choose an option: " opt
   if [[ "x$opt" == "xx" ]] ; then
     exit 0
   fi
 
-  read -p "[I]nstall or [r]emove: " yn
+  read -p "> Choose [I]nstall or [r]emove: " yn
+
+  # namespace
+  # TODO: create namespace
+  read -p "> Choose namespace [default]: " select_ns
+  if [[ "x$select_ns" == "x" ]] ; then
+    select_ns="default"
+  fi
+
+  # TODO: create netpol: deny ingress
+  # ---
+  # apiVersion: networking.k8s.io/v1
+  # kind: NetworkPolicy
+  # metadata:
+  #   name: deny-ingress-all
+  #   namespace: system
+  # spec:
+  #   podSelector: {}
+  #   # ingress:
+  #   #   - {}
+  #   policyTypes:
+  #     - Ingress
 
   # kube-system: metrics-server
   if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x1" ]] ; then
@@ -56,7 +78,7 @@ while [[ "x$opt" != "xx" ]] ; do
       kubectl delete -f metrics-server
     fi
   fi
-  
+
   # kube-system: kube-state-metrics
   if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x2" ]] ; then
     if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
@@ -83,7 +105,7 @@ while [[ "x$opt" != "xx" ]] ; do
 
       echo -e "\n==> dashboard: apply:\n"
       kubectl apply -f kubernetes-dashboard/
-      for i in $(seq 1 3) ; do echo -n "." ; sleep 1 ; done ; echo 
+      for i in $(seq 1 3) ; do echo -n "." ; sleep 1 ; done ; echo
       kubectl apply -f kubernetes-dashboard/
     elif [[ "x$yn" == "xr" ]] ; then
       kubectl delete -f kubernetes-dashboard/
@@ -143,34 +165,31 @@ while [[ "x$opt" != "xx" ]] ; do
 
   # postgres
   if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x5" ]] ; then
+    # install / remove
     if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
-      if [ ! -f postgres/helm/postgres/templates/secret.yml ] ; then
+      if [ ! -f helm/postgres/templates/secret.yml ] ; then
         read -s -p "==> Enter postgres password: " pg_pwd
         pg_pwd=$(echo -n $pg_pwd | base64)
-        cat postgres/helm/postgres/templates/_secret.yml | sed "s/_PG_PWD_/$pg_pwd/g" > postgres/helm/postgres/templates/secret.yml
+        cat helm/postgres/templates/_secret.yml | sed "s/_PG_PWD_/$pg_pwd/g" > helm/postgres/templates/secret.yml
       fi
 
       echo -e "\n==> postgres: helm install:\n"
       helm upgrade --install --timeout 20m \
-        postgres postgres/helm/postgres \
-        --namespace system \
+        postgres helm/postgres \
+        --namespace $select_ns \
         --create-namespace \
-        -f postgres/helm/values.yaml
-      
-      kubectl -n system wait pods --selector app=postgres --for=condition=Ready --timeout=90s
+        -f helm/postgres.yaml
+
+      kubectl -n $select_ns wait pods --selector app=postgres --for=condition=Ready --timeout=90s
 
     elif [[ "x$yn" == "xr" ]] ; then
-      helm uninstall -n system postgres
-      kubectl -n system get all
-      read -p "==> Delete system namespace [y/N]: " yn
-      if [[ "x$yn" == "xy" ]] || [[ "x$yn" == "xY" ]] ; then
-        kubectl delete namespace system
-      fi
+      helm uninstall -n $select_ns postgres
     fi
   fi
 
   # keycloak
   if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x6" ]] ; then
+    # install / remove
     if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
       if [ ! -f keycloak/helm/keycloak/templates/secret.yml ] ; then
         read -s -p "==> Enter keycloak password: " kc_pwd
@@ -181,19 +200,38 @@ while [[ "x$opt" != "xx" ]] ; do
       echo -e "\n==> keycloak: helm install:\n"
       helm upgrade --install --timeout 20m \
         keycloak keycloak/helm/keycloak \
-        --namespace system \
+        --namespace $select_ns \
         --create-namespace \
         -f keycloak/helm/values.yaml
-      
-      kubectl -n system wait pods --selector app=keycloak --for=condition=Ready --timeout=90s
+
+      kubectl -n $select_ns wait pods --selector app=keycloak --for=condition=Ready --timeout=90s
 
     elif [[ "x$yn" == "xr" ]] ; then
-      helm uninstall -n system keycloak
-      kubectl -n system get all
-      read -p "==> Delete system namespace [y/N]: " yn
-      if [[ "x$yn" == "xy" ]] || [[ "x$yn" == "xY" ]] ; then
-        kubectl delete namespace system
-      fi
+      helm uninstall -n $select_ns keycloak
+    fi
+  fi
+
+  # monitoring
+  if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x7" ]] ; then
+    # install / remove
+    if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
+      # if [ ! -f prometheus/helm/prometheus/templates/secret.yml ] ; then
+      #   read -s -p "==> Enter prometheus password: " kc_pwd
+      #   kc_pwd=$(echo -n $kc_pwd | base64)
+      #   cat prometheus/helm/prometheus/templates/_secret.yml | sed "s/_KC_PWD_/$kc_pwd/g" > prometheus/helm/prometheus/templates/secret.yml
+      # fi
+
+      echo -e "\n==> monitoring: helm install:\n"
+      helm upgrade --install --timeout 20m \
+        monitoring monitoring/helm/monitoring \
+        --namespace $select_ns \
+        --create-namespace \
+        -f monitoring/helm/values.yaml
+
+      kubectl -n $select_ns wait pods --selector app=prometheus --for=condition=Ready --timeout=90s
+
+    elif [[ "x$yn" == "xr" ]] ; then
+      helm uninstall -n $select_ns monitoring
     fi
   fi
 

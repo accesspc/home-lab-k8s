@@ -9,5 +9,4 @@ secret.yml
 /site
 
 # helm
-**/helm/*/charts
-**/helm/values.yaml
+helm/*.yaml
