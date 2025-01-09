@@ -28,7 +28,8 @@ Options:
 
   5 - postgres
   6 - keycloak
-  7 - monitoring
+  7 - prometheus
+  8 - grafana
 
   x - exit (or Ctrl+C)
 
@@ -211,27 +212,39 @@ while [[ "x$opt" != "xx" ]] ; do
     fi
   fi
 
-  # monitoring
+  # prometheus
   if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x7" ]] ; then
     # install / remove
     if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
-      # if [ ! -f prometheus/helm/prometheus/templates/secret.yml ] ; then
-      #   read -s -p "==> Enter prometheus password: " kc_pwd
-      #   kc_pwd=$(echo -n $kc_pwd | base64)
-      #   cat prometheus/helm/prometheus/templates/_secret.yml | sed "s/_KC_PWD_/$kc_pwd/g" > prometheus/helm/prometheus/templates/secret.yml
-      # fi
-
-      echo -e "\n==> monitoring: helm install:\n"
+      echo -e "\n==> prometheus: helm install:\n"
       helm upgrade --install --timeout 20m \
-        monitoring monitoring/helm/monitoring \
+        prometheus helm/prometheus \
         --namespace $select_ns \
         --create-namespace \
-        -f monitoring/helm/values.yaml
+        -f helm/prometheus.yaml
 
       kubectl -n $select_ns wait pods --selector app=prometheus --for=condition=Ready --timeout=90s
 
     elif [[ "x$yn" == "xr" ]] ; then
-      helm uninstall -n $select_ns monitoring
+      helm uninstall -n $select_ns prometheus
+    fi
+  fi
+
+  # grafana
+  if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x8" ]] ; then
+    # install / remove
+    if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
+      echo -e "\n==> grafana: helm install:\n"
+      helm upgrade --install --timeout 20m \
+        grafana helm/grafana \
+        --namespace $select_ns \
+        --create-namespace \
+        -f helm/grafana.yaml
+
+      kubectl -n $select_ns wait pods --selector app=grafana --for=condition=Ready --timeout=90s
+
+    elif [[ "x$yn" == "xr" ]] ; then
+      helm uninstall -n $select_ns grafana
     fi
   fi
 
