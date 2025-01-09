@@ -10,3 +10,4 @@ secret.yml
 
 # helm
 helm/*.yaml
+helm/**/Chart.lock

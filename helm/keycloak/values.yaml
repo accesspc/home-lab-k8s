@@ -12,10 +12,7 @@ keycloak:
   cert:
     dnsNames:
       - keycloak.example.com
-    issuerName: letsencrypt-prod
+    issuerName: letsencrypt-staging
     orgs:
       - example.com
   hostname: keycloak.example.com
-
-  labels:
-    app: keycloak

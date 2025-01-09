@@ -3,9 +3,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: prometheus
-  namespace: monitoring
+  namespace: {{ .Release.Namespace }}
   labels:
     app: prometheus
+    release: {{ .Release.Name }}
 spec:
   replicas: 1
   selector:
@@ -17,20 +18,21 @@ spec:
     metadata:
       labels:
         app: prometheus
+        release: {{ .Release.Name }}
     spec:
-      initContainers:
-        - name: ipworward
-          image: busybox
-          command: ["/bin/sh"]
-          args:
-            - -c
-            - sysctl -w net.ipv4.ip_forward=1 net.ipv6.conf.all.forwarding=1
-          resources:
-            requests:
-              cpu: 10m
-              memory: 10Mi
-          securityContext:
-            privileged: true
+      # initContainers:
+      #   - name: ipworward
+      #     image: busybox
+      #     command: ["/bin/sh"]
+      #     args:
+      #       - -c
+      #       - sysctl -w net.ipv4.ip_forward=1 net.ipv6.conf.all.forwarding=1
+      #     resources:
+      #       requests:
+      #         cpu: 10m
+      #         memory: 10Mi
+      #     securityContext:
+      #       privileged: true
       containers:
         - name: prometheus
           image: prom/prometheus
@@ -56,6 +58,21 @@ spec:
               port: 9090
               scheme: HTTPS
             periodSeconds: 15
+          resources:
+            requests:
+              cpu: 37m
+              memory: 768Mi
+            limits:
+              memory: 768Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
           startupProbe:
             failureThreshold: 20
             httpGet:
@@ -64,12 +81,6 @@ spec:
               scheme: HTTPS
             initialDelaySeconds: 10
             periodSeconds: 5
-          resources:
-            requests:
-              cpu: 37m
-              memory: 768Mi
-            limits:
-              memory: 768Mi
           volumeMounts:
             - name: config-volume
               mountPath: /etc/prometheus/prometheus.yml
@@ -81,41 +92,43 @@ spec:
               mountPath: /prometheus
             - name: tls-crt
               mountPath: /etc/prometheus/tls
-        - name: sidecar-tailscale
-          image: tailscale/tailscale
-          imagePullPolicy: Always
-          env:
-            - name: TS_AUTHKEY
-              valueFrom:
-                secretKeyRef:
-                  name: tailscale-auth
-                  key: TS_AUTHKEY
-                  optional: true
-            - name: TS_EXTRA_ARGS
-              value: "--accept-routes"
-            - name: TS_KUBE_SECRET
-              value: tailscale-auth
-            - name: TS_USERSPACE
-              value: "false"
-          resources:
-            requests:
-              cpu: 10m
-              memory: 100Mi
-            limits:
-              memory: 100Mi
-          securityContext:
-            capabilities:
-              add:
-                - NET_ADMIN
-      serviceAccount: prometheus
+        # - name: sidecar-tailscale
+        #   image: tailscale/tailscale
+        #   imagePullPolicy: Always
+        #   env:
+        #     - name: TS_AUTHKEY
+        #       valueFrom:
+        #         secretKeyRef:
+        #           name: tailscale-auth
+        #           key: TS_AUTHKEY
+        #           optional: true
+        #     - name: TS_EXTRA_ARGS
+        #       value: "--accept-routes"
+        #     - name: TS_KUBE_SECRET
+        #       value: tailscale-auth
+        #     - name: TS_USERSPACE
+        #       value: "false"
+        #   resources:
+        #     requests:
+        #       cpu: 10m
+        #       memory: 100Mi
+        #     limits:
+        #       memory: 100Mi
+        #   securityContext:
+        #     capabilities:
+        #       add:
+        #         - NET_ADMIN
+      serviceAccount: {{ .Release.Name }}
       volumes:
         - name: config-volume
           configMap:
             defaultMode: 420
             name: prometheus-config
         - name: data-volume
-          persistentVolumeClaim:
-            claimName: prometheus-pvc
+          emptyDir:
+            sizeLimit: 500Mi
+          # persistentVolumeClaim:
+          #   claimName: prometheus-pvc
         - name: tls-crt
           secret:
-            secretName: prometheus.k8s.reiciunas.dev
+            secretName: {{ .Values.prometheus.hostname }}-tls

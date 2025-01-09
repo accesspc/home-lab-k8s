@@ -2,8 +2,11 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-ingress-prometheus
-  namespace: monitoring
+  name: allow-ingress-to-prometheus
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: prometheus
+    release: {{ .Release.Name }}
 spec:
   ingress:
     - ports:

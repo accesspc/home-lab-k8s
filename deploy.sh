@@ -141,7 +141,7 @@ while [[ "x$opt" != "xx" ]] ; do
       echo -e "\n==> cert-manager: helm install:\n"
       helm repo add jetstack https://charts.jetstack.io
       helm repo update
-      helm upgrade --install --timeout 20m \
+      helm upgrade --install --wait --timeout 20m \
         cert-manager jetstack/cert-manager \
         --namespace cert-manager \
         --create-namespace \
@@ -175,7 +175,7 @@ while [[ "x$opt" != "xx" ]] ; do
       fi
 
       echo -e "\n==> postgres: helm install:\n"
-      helm upgrade --install --timeout 20m \
+      helm upgrade --install --wait --timeout 20m \
         postgres helm/postgres \
         --namespace $select_ns \
         --create-namespace \
@@ -199,7 +199,7 @@ while [[ "x$opt" != "xx" ]] ; do
       fi
 
       echo -e "\n==> keycloak: helm install:\n"
-      helm upgrade --install --timeout 20m \
+      helm upgrade --install --wait --timeout 20m \
         keycloak helm/keycloak \
         --namespace $select_ns \
         --create-namespace \
@@ -217,7 +217,8 @@ while [[ "x$opt" != "xx" ]] ; do
     # install / remove
     if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
       echo -e "\n==> prometheus: helm install:\n"
-      helm upgrade --install --timeout 20m \
+      helm dep up helm/prometheus
+      helm upgrade --install --wait --timeout 20m \
         prometheus helm/prometheus \
         --namespace $select_ns \
         --create-namespace \
@@ -235,7 +236,7 @@ while [[ "x$opt" != "xx" ]] ; do
     # install / remove
     if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
       echo -e "\n==> grafana: helm install:\n"
-      helm upgrade --install --timeout 20m \
+      helm upgrade --install --wait --timeout 20m \
         grafana helm/grafana \
         --namespace $select_ns \
         --create-namespace \
