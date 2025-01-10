@@ -3,9 +3,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: snmp
-  namespace: monitoring
+  namespace: {{ .Release.Namespace }}
   labels:
     app: snmp
+    release: {{ .Release.Name }}
 spec:
   replicas: 1
   selector:
@@ -15,22 +16,13 @@ spec:
     metadata:
       labels:
         app: snmp
+        release: {{ .Release.Name }}
     spec:
       containers:
         - name: snmp
           image: prom/snmp-exporter
           ports:
             - containerPort: 9116
-          readinessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /
-              port: 9116
-              scheme: HTTP
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            successThreshold: 1
-            timeoutSeconds: 2
           livenessProbe:
             failureThreshold: 3
             initialDelaySeconds: 5
@@ -41,8 +33,27 @@ spec:
               port: 9116
               scheme: HTTP
             timeoutSeconds: 2
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 9116
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
           resources:
             limits:
               cpu: 500m
               memory: 256M
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
       serviceAccount: snmp
