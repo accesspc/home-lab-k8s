@@ -12,7 +12,9 @@ keycloak:
   cert:
     dnsNames:
       - keycloak.example.com
+    # issuerName: letsencrypt-prod | letsencrypt-staging
     issuerName: letsencrypt-staging
     orgs:
       - example.com
+
   hostname: keycloak.example.com

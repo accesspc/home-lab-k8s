@@ -8,7 +8,7 @@ grafana:
     dnsNames:
       - grafana.example.com
     # issuerName: letsencrypt-prod | letsencrypt-staging
-    issuerName: letsencrypt-prod
+    issuerName: letsencrypt-staging
     orgs:
       - example.com
 
