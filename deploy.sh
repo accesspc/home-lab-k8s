@@ -30,6 +30,7 @@ Options:
   6 - keycloak
   7 - prometheus
   8 - grafana
+  9 - netload
 
   x - exit (or Ctrl+C)
 
@@ -246,6 +247,24 @@ while [[ "x$opt" != "xx" ]] ; do
 
     elif [[ "x$yn" == "xr" ]] ; then
       helm uninstall -n $select_ns grafana
+    fi
+  fi
+
+  # netload
+  if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x9" ]] ; then
+    # install / remove
+    if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
+      echo -e "\n==> netload: helm install:\n"
+      helm upgrade --install --wait --timeout 20m \
+        netload helm/netload \
+        --namespace $select_ns \
+        --create-namespace \
+        -f helm/netload.yaml
+
+      kubectl -n $select_ns wait pods --selector app=netload --for=condition=Ready --timeout=90s
+
+    elif [[ "x$yn" == "xr" ]] ; then
+      helm uninstall -n $select_ns netload
     fi
   fi
 

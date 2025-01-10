@@ -1,0 +1,9 @@
+# Default values for netload.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+netload:
+  dl:
+    sleep: 15
+    url: https://example.com/file.dat
+  replicas: 1

@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netload
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: netload
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.netload.replicas }}
+  selector:
+    matchLabels:
+      app: netload
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: netload
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: netload
+          image: curlimages/curl
+          command:
+            - /bin/sh
+          args:
+            - -c
+            - "while true ; do curl -o /dev/null {{ .Values.netload.dl.url }} ; sleep {{ .Values.netload.dl.sleep }} ; done"
+          resources:
+            limits:
+              memory: 100Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+      serviceAccount: netload

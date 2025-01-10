@@ -30,9 +30,6 @@ blackbox:
 
   targets: []
 
-netload:
-  enabled: false
-
 node_exporter:
   enabled: true
 
