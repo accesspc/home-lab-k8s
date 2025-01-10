@@ -2,10 +2,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-env-config
+  name: keycloak-env-config
   namespace: {{ .Release.Namespace }}
   labels:
     app: keycloak
+    release: {{ .Release.Name }}
 data:
   KC_DB_PASSWORD: {{ .Values.keycloak.db.password }}
   KC_DB_URL_DATABASE: {{ .Values.keycloak.db.name }}

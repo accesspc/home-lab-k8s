@@ -9,6 +9,7 @@ keycloak:
     password: keycloak
     type: postgres
     username: keycloak
+
   cert:
     dnsNames:
       - keycloak.example.com
