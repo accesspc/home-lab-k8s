@@ -66,32 +66,34 @@ spec:
             - name: config-volume
               mountPath: /etc/grafana/custom.ini
               subPath: custom.ini
+            {{- if .Values.grafana.dataSources.prometheus.enabled }}
             - name: config-volume
               mountPath: /etc/grafana/provisioning/datasources/prometheus.yml
               subPath: prometheus.yml
-            - name: config-volume
-              mountPath: /etc/grafana/provisioning/dashboards/provider.yml
-              subPath: provider.yml
-            - name: dashboards
-              mountPath: /etc/dashboards
+            {{- end }}
+            # - name: config-volume
+            #   mountPath: /etc/grafana/provisioning/dashboards/provider.yml
+            #   subPath: provider.yml
+            # - name: dashboards
+            #   mountPath: /etc/dashboards
             - name: tls-crt
               mountPath: /etc/grafana/tls
-        - name: sidecar-dashboards
-          image: kiwigrid/k8s-sidecar
-          env:
-            - name: LABEL
-              value: grafana_dashboard
-            - name: FOLDER
-              value: /etc/dashboards
-          resources:
-            requests:
-              cpu: 10m
-              memory: 100Mi
-            limits:
-              memory: 100Mi
-          volumeMounts:
-            - name: dashboards
-              mountPath: /etc/dashboards
+        # - name: sidecar-dashboards
+        #   image: kiwigrid/k8s-sidecar
+        #   env:
+        #     - name: LABEL
+        #       value: grafana_dashboard
+        #     - name: FOLDER
+        #       value: /etc/dashboards
+        #   resources:
+        #     requests:
+        #       cpu: 10m
+        #       memory: 100Mi
+        #     limits:
+        #       memory: 100Mi
+        #   volumeMounts:
+        #     - name: dashboards
+        #       mountPath: /etc/dashboards
       securityContext:
         fsGroup: 472
         supplementalGroups:

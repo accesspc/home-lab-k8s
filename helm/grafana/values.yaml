@@ -3,6 +3,18 @@
 # Declare variables to be passed into your templates.
 
 grafana:
+  dataSources:
+    prometheus:
+      enabled: false
+      tlsSkipVerify: false
+      url: http://prometheus:9090
+
+  db:
+    type: postgres
+    host: postgres
+    name: grafana
+    password: grafana
+    username: grafana
 
   cert:
     dnsNames:
@@ -13,3 +25,15 @@ grafana:
       - example.com
 
   hostname: grafana.example.com
+
+  smtp:
+    enabled: false
+    host: localhost:25
+    user: ""
+    # If the password contains # or ; you have to wrap it with triple quotes. Ex """#password;"""
+    password: ""
+    cert_file: ""
+    key_file: ""
+    skip_verify: false
+    from_address: admin@grafana.localhost
+    from_name: Grafana

@@ -1,0 +1,115 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: grafana
+    release: {{ .Release.Name }}
+data:
+  custom.ini: |
+    # Grafana custom configuration
+    # Defaults: https://github.com/grafana/grafana/tree/main/conf
+
+    [server]
+    # Protocol (http, https, h2, socket)
+    protocol = https
+    # The full public facing url you use in browser, used for redirects and emails
+    # If you use reverse proxy and sub path specify full url (with sub path)
+    root_url = https://{{ .Values.grafana.hostname }}:30030/
+
+    # https certs & key file
+    cert_file = /etc/grafana/tls/tls.crt
+    cert_key = /etc/grafana/tls/tls.key
+
+    [database]
+    type = {{ .Values.grafana.db.type }}
+    host = {{ .Values.grafana.db.host }}
+    name = {{ .Values.grafana.db.name }}
+    password = {{ .Values.grafana.db.password }}
+    user = {{ .Values.grafana.db.username }}
+
+    {{- if .Values.grafana.smtp.enabled }}
+
+    [smtp]
+    enabled = true
+    host = {{ .Values.grafana.smtp.host }}
+    user = {{ .Values.grafana.smtp.user }}
+    password = {{ .Values.grafana.smtp.password }}
+    cert_file = {{ .Values.grafana.smtp.cert_file }}
+    key_file = {{ .Values.grafana.smtp.key_file }}
+    skip_verify = {{ .Values.grafana.smtp.skip_verify }}
+    from_address = {{ .Values.grafana.smtp.from_address }}
+    from_name = {{ .Values.grafana.smtp.from_name }}
+
+    {{- end }}
+
+  #   [log]
+  #   ; level = info
+
+  #   [auth.generic_oauth]
+  #   enabled = true
+  #   name = KeyCloak SSO
+  #   allow_sign_up = true
+  #   ; auto_login = false
+  #   client_id = grafana
+  #   client_secret = 3guA0gMzKk7IxSiMfQrAG6j37Zyp41bF
+  #   scopes = openid email profile offline_access roles
+  #   ; empty_scopes = false
+  #   ; email_attribute_name = email:primary
+  #   email_attribute_path = email
+  #   login_attribute_path = username
+  #   name_attribute_path = full_name
+  #   ; id_token_attribute_name =
+  #   auth_url = https://keycloak.k8s.reiciunas.dev:30443/realms/reiciunas/protocol/openid-connect/auth
+  #   token_url = https://keycloak.k8s.reiciunas.dev:30443/realms/reiciunas/protocol/openid-connect/token
+  #   api_url = https://keycloak.k8s.reiciunas.dev:30443/realms/reiciunas/protocol/openid-connect/userinfo
+  #   ; signout_redirect_url =
+  #   ; teams_url =
+  #   ; allowed_domains =
+  #   ; team_ids =
+  #   ; allowed_organizations =
+  #   role_attribute_path = contains(resource_access.grafana.roles[*], 'grafanaadmin') && 'GrafanaAdmin' || contains(resource_access.grafana.roles[*], 'admin') && 'Admin' || contains(resource_access.grafana.roles[*], 'editor') && 'Editor' || 'Viewer'
+  #   ; groups_attribute_path =
+  #   ; team_ids_attribute_path =
+  #   tls_skip_verify_insecure = true
+  #   ; tls_client_cert =
+  #   ; tls_client_key =
+  #   ; tls_client_ca =
+  #   ; use_pkce = true
+  #   ; auth_style =
+  #   allow_assign_grafana_admin = true
+
+  #   use_refresh_token = true
+
+  provider.yml: |
+    ---
+    apiVersion: 1
+
+    providers:
+      - name: dashboards
+        orgId: 1
+        type: file
+        disableDeletion: false
+        updateIntervalSeconds: 30
+        allowUiUpdates: true
+        options:
+          path: /etc/dashboards
+          foldersFromFilesStructure: true
+
+{{- if .Values.grafana.dataSources.prometheus.enabled }}
+
+  prometheus.yml: |
+    ---
+    apiVersion: 1
+    datasources:
+      - name: prometheus
+        type: prometheus
+        orgId: 1
+        updateIntervalSeconds: 30
+        url: {{ .Values.grafana.dataSources.prometheus.url }}
+        jsonData:
+          tlsSkipVerify: {{ .Values.grafana.dataSources.prometheus.url }}
+
+{{- end }}
