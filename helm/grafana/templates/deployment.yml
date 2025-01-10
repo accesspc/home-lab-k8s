@@ -3,9 +3,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: grafana
-  namespace: monitoring
+  namespace: {{ .Release.Namespace }}
   labels:
     app: grafana
+    release: {{ .Release.Name }}
 spec:
   replicas: 1
   selector:
@@ -15,11 +16,8 @@ spec:
     metadata:
       labels:
         app: grafana
+        release: {{ .Release.Name }}
     spec:
-      securityContext:
-        fsGroup: 472
-        supplementalGroups:
-          - 0
       containers:
         - name: grafana
           image: grafana/grafana:latest
@@ -41,6 +39,21 @@ spec:
               port: 3000
               scheme: HTTPS
             periodSeconds: 15
+          resources:
+            limits:
+              memory: 110Mi
+            requests:
+              cpu: 20m
+              memory: 110Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
           startupProbe:
             failureThreshold: 20
             httpGet:
@@ -49,12 +62,6 @@ spec:
               scheme: HTTPS
             initialDelaySeconds: 10
             periodSeconds: 5
-          resources:
-            requests:
-              cpu: 20m
-              memory: 110Mi
-            limits:
-              memory: 110Mi
           volumeMounts:
             - name: config-volume
               mountPath: /etc/grafana/custom.ini
@@ -85,6 +92,10 @@ spec:
           volumeMounts:
             - name: dashboards
               mountPath: /etc/dashboards
+      securityContext:
+        fsGroup: 472
+        supplementalGroups:
+          - 0
       serviceAccount: grafana
       volumes:
         - name: config-volume
@@ -94,4 +105,4 @@ spec:
           emptyDir: {}
         - name: tls-crt
           secret:
-            secretName: grafana.k8s.reiciunas.dev
+            secretName: {{ .Values.grafana.hostname }}-tls

@@ -1,0 +1,15 @@
+# Default values for grafana.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+grafana:
+
+  cert:
+    dnsNames:
+      - grafana.example.com
+    # issuerName: letsencrypt-prod | letsencrypt-staging
+    issuerName: letsencrypt-prod
+    orgs:
+      - example.com
+
+  hostname: grafana.example.com
