@@ -11,10 +11,6 @@ prometheus:
     orgs:
       - example.com
 
-  exporters:
-    node:
-      enabled: false
-
   hostname: prometheus.example.com
 
 blackbox:
@@ -25,8 +21,8 @@ blackbox:
 netload:
   enabled: false
 
-node-exporter:
-  enabled: false
+node_exporter:
+  enabled: true
 
 snmp:
   enabled: false

@@ -35,7 +35,7 @@ dependencies:
   - name: node-exporter
     version: ">= 0.1.0"
     # repository: (optional) The repository URL ("https://example.com/charts") or alias ("@repo-name")
-    condition: node-exporter.enabled
+    condition: node_exporter.enabled
     tags:
       - node-exporter
     alias: node-exporter
