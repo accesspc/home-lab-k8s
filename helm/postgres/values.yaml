@@ -13,9 +13,6 @@ postgres:
       password: default
       user: default
 
-  labels:
-    app: postgres
-
   pv:
     nfs:
       path: /data/postgres

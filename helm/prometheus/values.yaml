@@ -3,6 +3,11 @@
 # Declare variables to be passed into your templates.
 
 prometheus:
+  dataVolume:
+    size: 500Mi
+    # type: emptydir (default) | pvc_nfs
+    type: emptydir
+
   cert:
     dnsNames:
       - prometheus.example.com
@@ -12,6 +17,13 @@ prometheus:
       - example.com
 
   hostname: prometheus.example.com
+
+  pv:
+    nfs:
+      path: /data/prometheus
+      server: 192.168.1.1
+    size: 5Gi
+    storageClassName: slow
 
 blackbox:
   enabled: false

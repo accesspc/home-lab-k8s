@@ -1,0 +1,21 @@
+---
+{{- if eq .Values.prometheus.dataVolume.type "pvc_nfs" }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prometheus-pv
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: {{ .Values.prometheus.pv.size }}
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: {{ .Values.prometheus.pv.nfs.path }}
+    server: {{ .Values.prometheus.pv.nfs.server }}
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: {{ .Values.prometheus.pv.storageClassName }}
+  volumeMode: Filesystem
+{{- end }}

@@ -1,4 +1,5 @@
 ---
+{{- if eq .Values.prometheus.dataVolume.type "pvc_nfs" }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -9,6 +10,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 500Mi
-  storageClassName: slow
+      storage: {{ .Values.prometheus.dataVolume.size }}
+  storageClassName: {{ .Values.prometheus.pvc.nfs.path.storageClassName }}
   volumeMode: Filesystem
+{{- end }}
