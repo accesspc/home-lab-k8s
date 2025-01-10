@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: node-exporter
-  namespace: monitoring
+  namespace: {{ .Release.Namespace }}
   labels:
     app: node-exporter
     app.kubernetes.io/component: exporter
@@ -22,6 +22,7 @@ spec:
         app: node-exporter
         app.kubernetes.io/component: exporter
         app.kubernetes.io/name: node-exporter
+        release: {{ .Release.Name }}
     spec:
       containers:
         - name: node-exporter
