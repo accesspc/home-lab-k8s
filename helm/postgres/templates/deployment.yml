@@ -6,6 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: postgres
+    release: {{ .Release.Name }}
 spec:
   replicas: 1
   selector:
@@ -17,6 +18,7 @@ spec:
     metadata:
       labels:
         app: postgres
+        release: {{ .Release.Name }}
     spec:
       containers:
         - name: {{ .Release.Name }}
@@ -41,11 +43,11 @@ spec:
               command: ["pg_isready", "-U", "postgres"]
             periodSeconds: 15
           resources:
+            limits:
+              memory: 200Mi
             requests:
               cpu: 20m
               memory: 100Mi
-            limits:
-              memory: 200Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -68,7 +70,7 @@ spec:
               mountPath: /docker-entrypoint-initdb.d
       securityContext:
         fsGroup: 26
-      serviceAccount: {{ .Release.Name }}
+      serviceAccount: postgres
       volumes:
         - name: data-volume
           {{- if eq .Values.postgres.dataVolume.type "pvc_nfs" }}

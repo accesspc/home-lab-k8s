@@ -2,8 +2,11 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-apps-to-{{ .Release.Name }}
+  name: allow-ingress-to-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: postgres
+    release: {{ .Release.Name }}
 spec:
   ingress:
     - from:

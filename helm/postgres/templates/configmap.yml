@@ -2,10 +2,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-db-config
+  name: postgres-db-config
   namespace: {{ .Release.Namespace }}
   labels:
     app: postgres
+    release: {{ .Release.Name }}
 data:
   {{- range $db := .Values.postgres.dbs }}
   00-{{ $db.name }}.sql: |-
@@ -18,10 +19,11 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-env-config
+  name: postgres-env-config
   namespace: {{ .Release.Namespace }}
   labels:
     app: postgres
+    release: {{ .Release.Name }}
 data:
   PGDATA: /var/lib/postgresql/data/pgdata
   POSTGRES_DB: psql
