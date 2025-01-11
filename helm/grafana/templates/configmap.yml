@@ -83,6 +83,24 @@ data:
 
   #   use_refresh_token = true
 
+{{- if .Values.grafana.dataSources.prometheus.enabled }}
+
+  prometheus.yml: |
+    ---
+    apiVersion: 1
+    datasources:
+      - name: prometheus
+        type: prometheus
+        orgId: 1
+        updateIntervalSeconds: 30
+        url: {{ .Values.grafana.dataSources.prometheus.url }}
+        jsonData:
+          tlsSkipVerify: {{ .Values.grafana.dataSources.prometheus.tlsSkipVerify }}
+
+{{- end }}
+
+{{- if .Values.grafana.providers.dashboards.enabled }}
+
   provider.yml: |
     ---
     apiVersion: 1
@@ -98,18 +116,20 @@ data:
           path: /etc/dashboards
           foldersFromFilesStructure: true
 
-{{- if .Values.grafana.dataSources.prometheus.enabled }}
+{{- end }}
 
-  prometheus.yml: |
-    ---
-    apiVersion: 1
-    datasources:
-      - name: prometheus
-        type: prometheus
-        orgId: 1
-        updateIntervalSeconds: 30
-        url: {{ .Values.grafana.dataSources.prometheus.url }}
-        jsonData:
-          tlsSkipVerify: {{ .Values.grafana.dataSources.prometheus.url }}
-
+{{- if .Values.grafana.providers.dashboards.enabled }}
+{{ range $path, $_ :=  .Files.Glob "dashboards/**.json" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-{{ regexReplaceAll ".json" (base $path) "" }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    grafana_dashboard: "1"
+data:
+  {{ base $path }}: |-
+    {{- $.Files.Get $path | nindent 4}}
+{{- end }}
 {{- end }}

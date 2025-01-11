@@ -71,29 +71,42 @@ spec:
               mountPath: /etc/grafana/provisioning/datasources/prometheus.yml
               subPath: prometheus.yml
             {{- end }}
-            # - name: config-volume
-            #   mountPath: /etc/grafana/provisioning/dashboards/provider.yml
-            #   subPath: provider.yml
-            # - name: dashboards
-            #   mountPath: /etc/dashboards
+            {{- if .Values.grafana.providers.dashboards.enabled }}
+            - name: config-volume
+              mountPath: /etc/grafana/provisioning/dashboards/provider.yml
+              subPath: provider.yml
+            - name: dashboards
+              mountPath: /etc/dashboards
+            {{- end }}
             - name: tls-crt
               mountPath: /etc/grafana/tls
-        # - name: sidecar-dashboards
-        #   image: kiwigrid/k8s-sidecar
-        #   env:
-        #     - name: LABEL
-        #       value: grafana_dashboard
-        #     - name: FOLDER
-        #       value: /etc/dashboards
-        #   resources:
-        #     requests:
-        #       cpu: 10m
-        #       memory: 100Mi
-        #     limits:
-        #       memory: 100Mi
-        #   volumeMounts:
-        #     - name: dashboards
-        #       mountPath: /etc/dashboards
+        {{- if .Values.grafana.providers.dashboards.enabled }}
+        - name: sidecar-dashboards
+          image: kiwigrid/k8s-sidecar
+          env:
+            - name: LABEL
+              value: grafana_dashboard
+            - name: FOLDER
+              value: /etc/dashboards
+          resources:
+            limits:
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 100Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: dashboards
+              mountPath: /etc/dashboards
+        {{- end }}
       securityContext:
         fsGroup: 472
         supplementalGroups:

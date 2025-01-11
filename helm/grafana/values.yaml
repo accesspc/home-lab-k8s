@@ -26,6 +26,10 @@ grafana:
 
   hostname: grafana.example.com
 
+  providers:
+    dashboards:
+      enabled: false
+
   smtp:
     enabled: false
     host: localhost:25
