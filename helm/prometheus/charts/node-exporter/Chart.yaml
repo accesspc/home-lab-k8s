@@ -1,3 +1,4 @@
+---
 apiVersion: v2
 name: node-exporter
 description: A Helm chart for node exporter

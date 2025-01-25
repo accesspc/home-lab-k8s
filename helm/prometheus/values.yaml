@@ -1,3 +1,4 @@
+---
 # Default values for monitoring.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -25,13 +26,51 @@ prometheus:
     size: 5Gi
     storageClassName: slow
 
+# blackbox-exporter
 blackbox:
   enabled: false
 
-  targets: []
+  # Example targets
+  targets:
+    - example.com
 
+# docker metrics
+docker:
+  enabled: false
+
+  # Example static configs
+  static_configs:
+    - labels:
+        instance: docker-host
+      targets:
+        - 192.168.1.1:9323
+
+# mysqld-exporter
+mysqld:
+  enabled: false
+
+  # Example static configs
+  static_configs:
+    - labels:
+        instance: mysql-host
+      targets:
+        - 192.168.1.1:9104
+
+# node-exporter
+node:
+  enabled: false
+
+  # Example static configs
+  static_config:
+    - labels:
+        instance: linux-host
+      targets:
+        - 192.168.1.1:9100
+
+# node-exporter for kubernetes
 node_exporter:
   enabled: true
 
+# snmp-exporter
 snmp:
   enabled: false
