@@ -21,11 +21,13 @@ Options:
 
   0 - all
 
+> System wide
   1 - kube-system: metrics-server
   2 - kube-system: kube-state-metrics
   3 - kubernetes-dashboard
   4 - cert-manager
 
+> Apps
   5 - postgres
   6 - keycloak
   7 - prometheus
@@ -50,9 +52,11 @@ while [[ "x$opt" != "xx" ]] ; do
 
   # namespace
   # TODO: create namespace
-  read -p "> Choose namespace [default]: " select_ns
-  if [[ "x$select_ns" == "x" ]] ; then
-    select_ns="default"
+  if [[ $opt -eq 0 ]] || [[ $opt -gt 4 ]] ; then
+    read -p "> Choose namespace [default]: " select_ns
+    if [[ "x$select_ns" == "x" ]] ; then
+      select_ns="default"
+    fi
   fi
 
   # TODO: create netpol: deny ingress
