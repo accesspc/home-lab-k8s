@@ -18,6 +18,9 @@ prometheus:
 
   hostname: prometheus.example.com
 
+  ingress:
+    enabled: false
+
   nodePort: 30090
 
   pvc:
