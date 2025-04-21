@@ -125,10 +125,13 @@ spec:
             defaultMode: 420
             name: prometheus-config
         - name: data-volume
+          {{- if .Values.prometheus.pvc.enabled }}
+          persistentVolumeClaim:
+            claimName: prometheus-pvc
+          {{- else }}
           emptyDir:
             sizeLimit: 500Mi
-          # persistentVolumeClaim:
-          #   claimName: prometheus-pvc
+          {{- end }}
         - name: tls-crt
           secret:
             secretName: {{ .Values.prometheus.hostname }}-tls

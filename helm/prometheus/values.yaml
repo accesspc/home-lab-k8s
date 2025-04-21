@@ -4,11 +4,6 @@
 # Declare variables to be passed into your templates.
 
 prometheus:
-  dataVolume:
-    size: 500Mi
-    # type: emptydir (default) | pvc_nfs
-    type: emptydir
-
   cert:
     dnsNames:
       - prometheus.example.com
@@ -17,7 +12,32 @@ prometheus:
     orgs:
       - example.com
 
+  dataVolume:
+    size: 500Mi
+    type: emptydir
+
   hostname: prometheus.example.com
+
+  nodePort: 30090
+
+  pvc:
+    enabled: false
+
+  remoteWrite:
+    enabled: false
+
+    # https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.remote_write/
+    endpoints: []
+
+  # scrape_configs
+  scrape:
+    blackbox: false
+    docker: false
+    kubernetes: false
+    kubeStateMetrics: false
+    mysqld: false
+    node: false
+    nodeExporter: false
 
   pv:
     nfs:
@@ -30,9 +50,8 @@ prometheus:
 blackbox:
   enabled: false
 
-  # Example targets
-  targets:
-    - example.com
+  # List of domain names
+  targets: []
 
 # docker metrics
 docker:
@@ -68,8 +87,8 @@ node:
         - 192.168.1.1:9100
 
 # node-exporter for kubernetes
-node_exporter:
-  enabled: true
+nodeExporter:
+  enabled: false
 
 # snmp-exporter
 snmp:

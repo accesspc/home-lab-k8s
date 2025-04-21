@@ -50,15 +50,6 @@ while [[ "x$opt" != "xx" ]] ; do
 
   read -p "> Choose [I]nstall or [r]emove: " yn
 
-  # namespace
-  # TODO: create namespace
-  if [[ $opt -eq 0 ]] || [[ $opt -gt 4 ]] ; then
-    read -p "> Choose namespace [default]: " select_ns
-    if [[ "x$select_ns" == "x" ]] ; then
-      select_ns="default"
-    fi
-  fi
-
   # TODO: create netpol: deny ingress
   # ---
   # apiVersion: networking.k8s.io/v1
@@ -171,6 +162,15 @@ while [[ "x$opt" != "xx" ]] ; do
 
   # postgres
   if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x5" ]] ; then
+    echo
+    helm list -A
+    echo
+
+    read -p "> Choose namespace [system]: " select_ns
+    if [[ "x$select_ns" == "x" ]] ; then
+      select_ns="system"
+    fi
+
     # install / remove
     if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
       if [ ! -f helm/postgres/templates/secret.yml ] ; then
@@ -195,6 +195,15 @@ while [[ "x$opt" != "xx" ]] ; do
 
   # keycloak
   if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x6" ]] ; then
+    echo
+    helm list -A
+    echo
+
+    read -p "> Choose namespace [system]: " select_ns
+    if [[ "x$select_ns" == "x" ]] ; then
+      select_ns="system"
+    fi
+
     # install / remove
     if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
       if [ ! -f helm/keycloak/templates/secret.yml ] ; then
@@ -219,6 +228,15 @@ while [[ "x$opt" != "xx" ]] ; do
 
   # prometheus
   if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x7" ]] ; then
+    echo
+    helm list -A
+    echo
+
+    read -p "> Choose namespace [monitoring]: " select_ns
+    if [[ "x$select_ns" == "x" ]] ; then
+      select_ns="monitoring"
+    fi
+
     # install / remove
     if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
       echo -e "\n==> prometheus: helm install:\n"
@@ -238,6 +256,15 @@ while [[ "x$opt" != "xx" ]] ; do
 
   # grafana
   if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x8" ]] ; then
+    echo
+    helm list -A
+    echo
+
+    read -p "> Choose namespace [monitoring]: " select_ns
+    if [[ "x$select_ns" == "x" ]] ; then
+      select_ns="monitoring"
+    fi
+
     # install / remove
     if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
       echo -e "\n==> grafana: helm install:\n"
@@ -256,6 +283,15 @@ while [[ "x$opt" != "xx" ]] ; do
 
   # netload
   if [[ "x$opt" == "x0" ]] || [[ "x$opt" == "x9" ]] ; then
+    echo
+    helm list -A
+    echo
+
+    read -p "> Choose namespace [monitoring]: " select_ns
+    if [[ "x$select_ns" == "x" ]] ; then
+      select_ns="monitoring"
+    fi
+
     # install / remove
     if [[ "x$yn" == "xi" ]] || [[ "x$yn" == "xI" ]] || [[ "x$yn" == "x" ]] ; then
       echo -e "\n==> netload: helm install:\n"

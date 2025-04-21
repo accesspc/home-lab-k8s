@@ -21,9 +21,22 @@ data:
             - targets:
                 - "alertmanager.{{ .Release.Namespace }}.svc:9093"
 
+    {{- if .Values.prometheus.remoteWrite.enabled }}
+
+    remote_write:
+
+    {{- range .Values.prometheus.remoteWrite.endpoints }}
+      - url: {{ .url }}
+        basic_auth:
+          username: {{ .username | quote }}
+          password: {{ .password | quote }}
+    {{- end }}
+
+    {{- end }}
+
     scrape_configs:
 
-      {{- if and .Values.blackbox.enabled .Values.blackbox.targets }}
+      {{- if and .Values.prometheus.scrape.blackbox .Values.blackbox.targets }}
 
       - job_name: blackbox
         metrics_path: /probe
@@ -49,7 +62,7 @@ data:
 
       {{- end }}
 
-      {{- if and .Values.docker.enabled .Values.docker.static_configs }}
+      {{- if and .Values.prometheus.scrape.docker .Values.docker.static_configs }}
 
       - job_name: docker
 
@@ -58,10 +71,16 @@ data:
 
       {{- end }}
 
+      {{- if .Values.prometheus.scrape.kubeStateMetrics }}
+
       - job_name: kube-state-metrics
 
         static_configs:
           - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
+
+      {{- end }}
+
+      {{- if .Values.prometheus.scrape.kubernetes }}
 
       - job_name: kubernetes-apiservers
 
@@ -183,7 +202,9 @@ data:
           - target_label: cluster
             replacement: kubernetes
 
-      {{- if and .Values.mysqld.enabled .Values.mysqld.static_configs }}
+      {{- end }}
+
+      {{- if and .Values.prometheus.scrape.mysqld .Values.mysqld.static_configs }}
 
       - job_name: mysqld
 
@@ -192,7 +213,7 @@ data:
 
       {{- end }}
 
-      {{- if and .Values.node.enabled .Values.node.static_configs }}
+      {{- if and .Values.prometheus.scrape.node .Values.node.static_configs }}
 
       - job_name: node
 
@@ -201,7 +222,7 @@ data:
 
       {{- end }}
 
-      {{- if .Values.node_exporter.enabled }}
+      {{- if .Values.prometheus.scrape.nodeExporter }}
 
       - job_name: node-exporter
 
