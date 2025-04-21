@@ -18,4 +18,4 @@ spec:
           cloudflare:
             apiTokenSecretRef:
               name: cloudflare-credentials
-              key: API_KEY
+              key: API_TOKEN
