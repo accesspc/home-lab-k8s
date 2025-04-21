@@ -23,8 +23,25 @@ prometheus:
 
   nodePort: 30090
 
+  pv:
+    enabled: false
+
+    accessModes:
+      - ReadWriteMany
+
+    capacity: 5Gi
+    path: /data/prometheus
+    server: 192.168.1.1
+    size: 5Gi
+
   pvc:
     enabled: false
+
+    accessModes:
+      - ReadWriteMany
+
+    size: 1Gi
+    storageClassName: nfs
 
   remoteWrite:
     enabled: false
@@ -41,13 +58,6 @@ prometheus:
     mysqld: false
     node: false
     nodeExporter: false
-
-  pv:
-    nfs:
-      path: /data/prometheus
-      server: 192.168.1.1
-    size: 5Gi
-    storageClassName: slow
 
 # blackbox-exporter
 blackbox:

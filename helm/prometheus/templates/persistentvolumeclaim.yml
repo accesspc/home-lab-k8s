@@ -7,10 +7,10 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
-    - ReadWriteMany
+  {{ .Values.prometheus.pvc.accessModes | toYaml | indent 2 }}
   resources:
     requests:
-      storage: {{ .Values.prometheus.dataVolume.size }}
-  storageClassName: {{ .Values.prometheus.pvc.nfs.path.storageClassName }}
+      storage: {{ .Values.prometheus.pvc.size }}
+  storageClassName: {{ .Values.prometheus.pvc.storageClassName }}
   volumeMode: Filesystem
 {{- end }}

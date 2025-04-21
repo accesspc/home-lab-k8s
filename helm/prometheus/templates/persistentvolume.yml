@@ -1,22 +1,23 @@
 ---
-{{- if .Values.prometheus.pvc.enabled }}
+{{- if .Values.prometheus.pv.enabled }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: prometheus-pv
-  release: {{ .Release.Name }}
+  name: prometheus-nfs-pv
+  labels:
+    type: nfs
 spec:
   accessModes:
-    - ReadWriteMany
+  {{ .Values.prometheus.pv.accessModes | toYaml | indent 2 }}
   capacity:
-    storage: {{ .Values.prometheus.pv.size }}
+    storage: {{ .Values.prometheus.pv.capacity }}
   mountOptions:
     - hard
     - nfsvers=4.1
   nfs:
-    path: {{ .Values.prometheus.pv.nfs.path }}
-    server: {{ .Values.prometheus.pv.nfs.server }}
+    path: {{ .Values.prometheus.pv.path }}
+    server: {{ .Values.prometheus.pv.server }}
   persistentVolumeReclaimPolicy: Delete
-  storageClassName: {{ .Values.prometheus.pv.storageClassName }}
+  storageClassName: nfs
   volumeMode: Filesystem
 {{- end }}
